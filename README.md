@@ -11,7 +11,7 @@ This script allows you to use speech recognition to input a prompt, send the pro
 
 1. Replace `YOUR_API_KEY_HERE` in the following line with your actual OpenAI API key: `openai.api_key = "YOUR_API_KEY_HERE"`
 2. Run the script using `python smart_speaker.py`.
-3. The script will prompt you to say something. Speak a sentence into your microphone.
+3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
 
 ## Customization
