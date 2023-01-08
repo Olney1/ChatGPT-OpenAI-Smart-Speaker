@@ -44,10 +44,10 @@ def chatgpt_response(prompt):
     return response
 
 def generate_audio_file(text):
-    # convert and save the text response from chatgpt to an audio file 
-    myobj = gTTS(text=text, lang=language, slow=False)
+    # convert the text response from chatgpt to an audio file 
+    audio = gTTS(text=text, lang=language, slow=False)
     # save the audio file
-    myobj.save("response.mp3")
+    audio.save("response.mp3")
 
 def play_audio_file():
     # play the audio file
