@@ -21,7 +21,7 @@ This script allows you to use speech recognition to input a prompt, send the pro
 - You can adjust the `temperature` parameter in the following line to control the randomness of the generated response:
 
 ```
-completions = openai.Completion.create(
+response = openai.Completion.create(
 engine=model_engine,
 prompt=prompt,
 max_tokens=1024,

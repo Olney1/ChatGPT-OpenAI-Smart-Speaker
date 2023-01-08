@@ -30,15 +30,15 @@ def recognize_speech():
 
     return speech
 
-def get_completions(prompt):
-    completions = openai.Completion.create(
+def chatgpt_response(prompt):
+    response = openai.Completion.create(
         engine=model_engine,
         prompt=prompt,
         max_tokens=1024,
         n=1,
         temperature=0.7,
     )
-    return completions
+    return response
 
 def generate_audio_file(text):
     myobj = gTTS(text=text, lang=language, slow=False)
@@ -51,8 +51,8 @@ def play_audio_file():
 def main():
     prompt = recognize_speech()
     print(f"This is the prompt being sent to OpenAI" + prompt)
-    completions = get_completions(prompt)
-    message = completions.choices[0].text
+    responses = chatgpt_response(prompt)
+    message = responses.choices[0].text
     print(message)
     generate_audio_file(message)
     play_audio_file()
