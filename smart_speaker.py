@@ -5,7 +5,7 @@ import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
 
-openai.api_key = "YOUR-KEY-GOES-HERE"
+openai.api_key = "YOUR_API_KEY_HERE"
 model_engine = "text-davinci-002"
 language = 'en'
 

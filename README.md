@@ -5,7 +5,7 @@ This script allows you to use speech recognition to input a prompt, send the pro
 ## Prerequisites
 
 - You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
-- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `speech_recognition`, `playsound`. You can install these packages using `pip install openai gTTS pyaudio speech_recognition playsound` or use pipenv if you wish to contain a virtual environment.
+- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound`. You can install these packages using `pip install openai gTTS pyaudio speech_recognition playsound` or use pipenv if you wish to contain a virtual environment.
 
 ## Usage
 
