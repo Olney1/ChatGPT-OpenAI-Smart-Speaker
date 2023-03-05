@@ -1,6 +1,6 @@
 # ChatGPT Smart Speaker (speech recognition and text-to-speech using OpenAI and gTTS)
 
-![Jeff the smart speaker](images/pi.png)
+![Jeff the smart speaker](images/pi.jpg)
 
 <video width="320" height="240" controls>
   <source src="videos/speaker-jeff.mp4" type="video/mp4">

@@ -6,7 +6,6 @@ Credit to: https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
 *.pyc
 __pycache__
 db.sqlite3
-media
 
 # Backup files # 
 *.bak 
