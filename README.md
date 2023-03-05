@@ -26,7 +26,7 @@ The `smart_speaker.py` script is currently work in progress to implement the sam
 
 ## Usage - applies to chat.py:
 
-1. You'll need to set up the environment variable for your Open API Key: `openai.api_key = "OPENAI_API_KEY"`. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY = "API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY = "API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
 2. Run the script using `python chat.py`.
 3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
