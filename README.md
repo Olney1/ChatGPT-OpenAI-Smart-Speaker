@@ -19,7 +19,7 @@ The `smart_speaker.py` script is currently work in progress to implement the sam
 ## Prerequisites
 
 - You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
-- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using `pip install openai gTTS pyaudio SpeechRecognition playsound` or use pipenv if you wish to contain a virtual environment.
+- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using `pip install openai gTTS pyaudio SpeechRecognition playsound python-dotenv` or use pipenv if you wish to contain a virtual environment.
 
 ## Usage - applies to chat.py:
 
