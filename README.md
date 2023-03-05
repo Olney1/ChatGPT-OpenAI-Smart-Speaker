@@ -32,10 +32,11 @@ The `smart_speaker.py` script is currently work in progress to implement the sam
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
 
 ## Usage - applies to smart_speaker.py:
-1. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
-2. Run the script using `python smart_speaker.py`.
-3. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Lily'. You can change this to any name you want but always include an upper and lower case version of the name for better detection. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample is being sent to OpenAI.
-4. The script will then generate a response using the text-to-speech model, and play the response as an audio file.
+1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY = "API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+2. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
+3. Run the script using `python smart_speaker.py`.
+4. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Lily'. You can change this to any name you want but always include an upper and lower case version of the name for better detection. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.
+5. The script will then generate a response using the text-to-speech model, and play the response as an audio file.
 
 
 ## Customisation
