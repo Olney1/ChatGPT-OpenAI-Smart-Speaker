@@ -6,7 +6,6 @@ from gtts import gTTS
 from playsound import playsound
 from dotenv import load_dotenv
 import apa102
-import time
 import threading
 from gpiozero import LED
 try:
@@ -14,7 +13,6 @@ try:
 except ImportError:
     import Queue as Queue
 from alexa_led_pattern import AlexaLedPattern
-import pvporcupine
  
 # Load the environment variables
 load_dotenv()
@@ -96,7 +94,7 @@ def recognize_speech():
                     # convert the audio to text
                     print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
                     speech = r.recognize_google(audio_stream)
-                    if ("Jeff" not in speech) and ("jeff" not in speech):
+                    if ("Lily" not in speech) and ("lily" not in speech):
                         # the wake word was not detected in the speech
                         print("Wake word not detected in the speech")
    						# Close the current microphone object

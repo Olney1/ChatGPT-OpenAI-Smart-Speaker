@@ -8,12 +8,21 @@ The `chat.py` script allows you to use speech recognition to input a prompt, sen
 
 ## The smart_speaker.py script
 
-The `smart_speaker.py` script is currently work in progress to implement the same functionality on a Raspberry Pi. There are currently quite a few steps to build `smart_speaker.py` on a Raspberry Pi and so this guide will be updated in the future. If you are confident enough to give it a go, please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi. You will need to have a speaker and microphone attached to your Raspberry Pi. I used both a USB microphone and USB speaker. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+The `smart_speaker.py` script is currently work in progress to implement the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi. You will need to have a speaker and microphone attached to your Raspberry Pi. I used both a USB microphone and USB speaker. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
 
-## Prerequisites
+## Prerequisites - chat.py
 
 - You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
 - You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using `pip install openai gTTS pyaudio SpeechRecognition playsound python-dotenv` or use pipenv if you wish to contain a virtual environment.
+
+## Prerequisites - smart_speaker.py
+- You'll need to follow the instructions above, plus run the following on your Raspberry Pi terminal:
+
+1. `sudo apt update`
+
+2. `sudo apt install python3-gpiozero`
+
+- To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
 
 ## Usage - applies to chat.py:
 
@@ -21,6 +30,13 @@ The `smart_speaker.py` script is currently work in progress to implement the sam
 2. Run the script using `python chat.py`.
 3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
+
+## Usage - applies to smart_speaker.py:
+1. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
+2. Run the script using `python smart_speaker.py`.
+3. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Lily'. You can change this to any name you want but always include an upper and lower case version of the name for better detection. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample is being sent to OpenAI.
+4. The script will then generate a response using the text-to-speech model, and play the response as an audio file.
+
 
 ## Customisation
 
@@ -76,4 +92,4 @@ See here for the resolution: https://raspberrypi.stackexchange.com/questions/137
 `flac 1.3.2`
 
 ## Credit to:
-https://github.com/tinue/apa102-pi & Seeed Technology Limited
+https://github.com/tinue/apa102-pi & Seeed Technology Limited for supplementary code.
