@@ -2,12 +2,6 @@
 
 ![Jeff the smart speaker](images/pi.jpg)
 
-<video width="320" height="240" controls>
-  <source src="videos/speaker-jeff.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
-
-
 ## The chat.py script
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
