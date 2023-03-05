@@ -72,3 +72,6 @@ See here for the resolution: https://raspberrypi.stackexchange.com/questions/137
 `/usr/bin/flac`
 `$ flac --version`
 `flac 1.3.2`
+
+## Credit to:
+https://github.com/tinue/apa102-pi & Seeed Technology Limited
