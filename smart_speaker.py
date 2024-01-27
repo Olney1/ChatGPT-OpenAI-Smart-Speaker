@@ -13,11 +13,12 @@ try:
 except ImportError:
     import Queue as Queue
 from alexa_led_pattern import AlexaLedPattern
+from pathlib import Path
  
 # Load the environment variables
 load_dotenv()
 # Create an OpenAI API client
-client = OpenAI()
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
  
 # load pixels Class
 class Pixels:
@@ -85,38 +86,33 @@ def recognize_speech():
     # obtain audio from the microphone
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        print("Waiting for wake word...")
-        while True:
+        try:
+            print("Listening...")
+            audio_stream = r.listen(source)
+            print("Waiting for wake word...")
+            # recognize speech using Google Speech Recognition
             try:
-                r.adjust_for_ambient_noise(source)
-                audio_stream = r.listen(source)
-                # recognize speech using Google Speech Recognition
-                try:
-                    # convert the audio to text
-                    print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
-                    speech = r.recognize_google(audio_stream)
-                    if ("Lily" not in speech) and ("lily" not in speech):
-                        # the wake word was not detected in the speech
-                        print("Wake word not detected in the speech")
-   						# Close the current microphone object
-                        return False
-                    else:
-                        # the wake word was detected in the speech
-                        print("Found wake word!")
-                        # wake up the display
-                        pixels.wakeup()
-                        return True
-                except sr.UnknownValueError:
-                    print("Google Speech Recognition could not understand audio")
-                    print("Waiting for wake word...")
+                # convert the audio to text
+                print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
+                speech = r.recognize_google(audio_stream)
+                print("Recognized Speech:", speech)  # Print the recognized speech for debugging
+                words = speech.lower().split()  # Split the speech into words
+                if "jeffers" not in words:
+                    print("Wake word not detected in the speech")
                     return False
-                except sr.RequestError as e:
-                    print("Could not request results from Google Speech Recognition service; {0}".format(e))
-                    print("Waiting for wake word...")
-                    return False
-            except KeyboardInterrupt:
-                print("Interrupted by User Keyboard")
-                break
+                else:
+                    print("Found wake word!")
+                    # pixels.wakeup()
+                    # Wake up the display
+                    return True
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio")
+            except sr.RequestError as e:
+                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        except KeyboardInterrupt:
+            print("Interrupted by User Keyboard")
+            pass
+
  
 def speech():
     # obtain audio from the microphone
@@ -152,20 +148,24 @@ def speech():
  
 def chatgpt_response(prompt):
     # send the converted audio text to chatgpt
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt,
+    response = client.chat.completions.create(
+        model=model_engine,
+        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+                  {"role": "user", "content": prompt}],
         max_tokens=1024,
         n=1,
         temperature=0.7,
     )
     return response
  
-def generate_audio_file(text):
-    # convert the text response from chatgpt to an audio file 
-    audio = gTTS(text=text, lang=language, slow=False)
-    # save the audio file
-    audio.save("response.mp3")
+def generate_audio_file(message):
+    speech_file_path = Path(__file__).parent / "response.mp3"
+    response = client.audio.speech.create(
+    model="tts-1",
+    voice="fable",
+    input=message
+)
+    response.stream_to_file(speech_file_path)
  
 def play_audio_file():
     # play the audio file and wake speaking LEDs
@@ -180,7 +180,7 @@ def main():
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             responses = chatgpt_response(prompt)
-            message = responses.choices[0].text
+            message = responses.choices[0].message.content
             print(message)
             generate_audio_file(message)
             play_audio_file()
