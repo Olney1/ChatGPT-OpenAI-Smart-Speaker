@@ -171,8 +171,8 @@ def play_audio_file():
     # play the audio file and wake speaking LEDs
     pixels.speak()
     # os.system("mpg321 response.mp3")
-    playsound("response.mp3", block=False) # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
- 
+    playsound("response.mp3", block=False)
+
 def main():
     # run the program
     while True:

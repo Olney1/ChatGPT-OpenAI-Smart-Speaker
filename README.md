@@ -26,22 +26,24 @@ To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model
 
 2. `sudo apt install python3-gpiozero`
 
-3. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
+3. `git clone https://github.com/Olney1/ChatGPT-OpenAI-Smart-Speaker`
+
+4. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
 Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero`
 
-4. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`
+5. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`
 
-5. Install support for APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`
+6. Install support for APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`
 
-6. Activate SPI: sudo raspi-config; Go to "Interface Options"; Go to "SPI"; Enable SPI; While you are at it: Do change the default password! Exit the tool and reboot.
+7. Activate SPI: sudo raspi-config; Go to "Interface Options"; Go to "SPI"; Enable SPI; While you are at it: Do change the default password! Exit the tool and reboot.
 
-7. Get the Seeed voice card source code, install and reboot: 
+8. Get the Seeed voice card source code, install and reboot: 
 `git clone https://github.com/HinTak/seeed-voicecard.git`
 `cd seeed-voicecard`
 `sudo ./install.sh`
 `sudo reboot now`
 
-8. Finally, load audio output on Raspberry Pi `sudo raspi-config`
+9. Finally, load audio output on Raspberry Pi `sudo raspi-config`
 -Select 1 System options
 -Select S2 Audio
 -Select your preferred Audio output device
