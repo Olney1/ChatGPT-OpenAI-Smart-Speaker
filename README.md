@@ -18,13 +18,35 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 - Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero pyobjc`
 
 ## Prerequisites - smart_speaker.py
-- You'll need to follow the instructions above, plus run the following on your Raspberry Pi terminal:
+To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
+
+- Run the following on your Raspberry Pi terminal:
 
 1. `sudo apt update`
 
 2. `sudo apt install python3-gpiozero`
 
-- To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
+3. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
+Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero`
+
+4. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`
+
+5. Install support for APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`
+
+6. Activate SPI: sudo raspi-config; Go to "Interface Options"; Go to "SPI"; Enable SPI; While you are at it: Do change the default password! Exit the tool and reboot.
+
+7. Get the Seeed voice card source code, install and reboot: 
+`git clone https://github.com/HinTak/seeed-voicecard.git`
+`cd seeed-voicecard`
+`sudo ./install.sh`
+`sudo reboot now`
+
+8. Then select audio output on Raspberry Pi `sudo raspi-config`
+# Select 1 System options
+# Select S2 Audio
+# Select your preferred Audio output device
+# Select Finish`
+
 
 ## Usage - applies to chat.py:
 
@@ -49,13 +71,15 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 - You can adjust the `temperature` parameter in the following line to control the randomness of the generated response:
 
 ```
-response = openai.Completion.create(
-engine=model_engine,
-prompt=prompt,
-max_tokens=1024,
-n=1,
-temperature=0.7,
-)
+response = client.chat.completions.create(
+        model=model_engine,
+        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+                  {"role": "user", "content": prompt}],
+        max_tokens=1024,
+        n=1,
+        temperature=0.7,
+    )
+    return response
 ```
 
 Higher values of `temperature` will result in more diverse and random responses, while lower values will result in more deterministic responses.
