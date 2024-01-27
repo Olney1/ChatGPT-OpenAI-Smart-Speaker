@@ -41,11 +41,11 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 `sudo ./install.sh`
 `sudo reboot now`
 
-8. Then select audio output on Raspberry Pi `sudo raspi-config`
-# Select 1 System options
-# Select S2 Audio
-# Select your preferred Audio output device
-# Select Finish`
+8. Finally, load audio output on Raspberry Pi `sudo raspi-config`
+-Select 1 System options
+-Select S2 Audio
+-Select your preferred Audio output device
+-Select Finish
 
 
 ## Usage - applies to chat.py:
