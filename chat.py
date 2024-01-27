@@ -1,17 +1,19 @@
-import openai
+from openai import OpenAI
 import os
 import pyaudio
 import speech_recognition as sr
 from gtts import gTTS
 from playsound import playsound
 from dotenv import load_dotenv
+from pathlib import Path
 
 # Load the environment variables
 load_dotenv()
 
+# Create an OpenAI API client
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 # settings and keys
-openai.api_key = os.environ.get('OPENAI_API_KEY')
-model_engine = "text-davinci-003"
+model_engine = "gpt-4-0125-preview"
 language = 'en'
 
 def recognize_speech():
@@ -27,7 +29,7 @@ def recognize_speech():
         # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
         # instead of `r.recognize_google(audio)`
         # convert the audio to text
-        print("Google Speech Recognition thinks you said " + r.recognize_google(audio))
+        print("Google Speech Recognition thinks you said: " + r.recognize_google(audio))
         speech = r.recognize_google(audio)
         print("This is what we think was said: " + speech)
     except sr.UnknownValueError:
@@ -39,32 +41,36 @@ def recognize_speech():
 
 def chatgpt_response(prompt):
     # send the converted audio text to chatgpt
-    response = openai.Completion.create(
-        engine=model_engine,
-        prompt=prompt,
+    response = client.chat.completions.create(
+        model=model_engine,
+        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+                  {"role": "user", "content": prompt}],
         max_tokens=1024,
         n=1,
         temperature=0.7,
     )
     return response
 
-def generate_audio_file(text):
-    # convert the text response from chatgpt to an audio file 
-    audio = gTTS(text=text, lang=language, slow=False)
-    # save the audio file
-    audio.save("response.mp3")
-
+def generate_audio_file(message):
+    speech_file_path = Path(__file__).parent / "response.mp3"
+    response = client.audio.speech.create(
+    model="tts-1",
+    voice="fable",
+    input=message
+)
+    response.stream_to_file(speech_file_path)
+ 
 def play_audio_file():
     # play the audio file
-    os.system("mpg321 response.mp3")
-    playsound("response.mp3", block=False) # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+    # os.system("mpg321 response.mp3")
+    playsound("response.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
 
 def main():
     # run the program
     prompt = recognize_speech()
-    print(f"This is the prompt being sent to OpenAI" + prompt)
+    print(f"This is the prompt being sent to OpenAI: " + prompt)
     responses = chatgpt_response(prompt)
-    message = responses.choices[0].text
+    message = responses.choices[0].message.content
     print(message)
     generate_audio_file(message)
     play_audio_file()
