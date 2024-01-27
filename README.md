@@ -13,7 +13,9 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 ## Prerequisites - chat.py
 
 - You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
-- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv`. You can install these packages using `pip install openai gTTS pyaudio SpeechRecognition playsound python-dotenv` or use pipenv if you wish to contain a virtual environment.
+- Run `brew install portaudio` after installing HomeBrew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+- You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv` and `pyobjc` if you are on a Mac. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. 
+- Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero pyobjc`
 
 ## Prerequisites - smart_speaker.py
 - You'll need to follow the instructions above, plus run the following on your Raspberry Pi terminal:
@@ -26,13 +28,14 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 
 ## Usage - applies to chat.py:
 
-1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY = "API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+You must not change the name of the variable `OPENAI_API_KEY`.
 2. Run the script using `python chat.py`.
 3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
 
 ## Usage - applies to smart_speaker.py:
-1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY = "API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program. You must not change the name of the variable `OPENAI_API_KEY`.
 2. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
 3. Run the script using `python smart_speaker.py`.
 4. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Lily'. You can change this to any name you want but always include an upper and lower case version of the name for better detection. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.

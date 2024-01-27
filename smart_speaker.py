@@ -1,5 +1,5 @@
 import os
-import openai
+from openai import OpenAI
 import pyaudio
 import speech_recognition as sr
 from gtts import gTTS
@@ -16,6 +16,8 @@ from alexa_led_pattern import AlexaLedPattern
  
 # Load the environment variables
 load_dotenv()
+# Create an OpenAI API client
+client = OpenAI()
  
 # load pixels Class
 class Pixels:
@@ -76,8 +78,7 @@ pixels = Pixels()
  
  
 # settings and keys
-openai.api_key = os.environ.get('OPENAI_API_KEY')
-model_engine = "text-davinci-003"
+model_engine = "gpt-4-0125-preview"
 language = 'en'
  
 def recognize_speech():
