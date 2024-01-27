@@ -13,6 +13,7 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 ## Prerequisites - chat.py
 
 - You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
+- You'll need to be running Python version 3.7.3 or higher. I am using 3.11.4 on a Mac and 3.7.3 on Raspberry Pi.
 - Run `brew install portaudio` after installing HomeBrew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 - You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv` and `pyobjc` if you are on a Mac. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. 
 - Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero pyobjc`
@@ -102,24 +103,42 @@ To test your microphone and speakers install Audacity on your Raspberry Pi:
 On the raspberry pi you may encounter an error regarding the installation of `flac`.
 
 See here for the resolution: https://raspberrypi.stackexchange.com/questions/137630/im-unable-to-install-flac-on-my-raspberry-pi-3
+
+The files you will need are going to be here: https://archive.raspbian.org/raspbian/pool/main/f/flac/
  
-`$ wget https://archive.raspbian.org/raspbian/pool/main/libo/libogg/libogg0_1.3.2-1+b2_armhf.deb`
+`sudo apt-get install libogg0`
 
-`$ wget https://archive.raspbian.org/raspbian/pool/main/f/flac/libflac8_1.3.2-2+deb9u2_armhf.deb`
+`$ wget https://archive.raspbian.org/raspbian/pool/main/f/flac/libflac8_1.3.2-3+deb10u3_armhf.deb`
 
-`$ wget https://archive.raspbian.org/raspbian/pool/main/f/flac/flac_1.3.2-2+deb9u2_armhf.deb`
+`$ wget https://archive.raspbian.org/raspbian/pool/main/f/flac/flac_1.3.2-3+deb10u3_armhf.deb`
 
-`$ sudo dpkg -i libogg0_1.3.2-1+b2_armhf.deb`
+`$ sudo dpkg -i libflac8_1.3.2-3+deb10u3_armhf.deb` 
 
-`$ sudo dpkg -i libflac8_1.3.2-2+deb9u2_armhf.deb` 
-
-`$ sudo dpkg -i flac_1.3.2-2+deb9u2_armhf.deb`
+`$ sudo dpkg -i flac_1.3.2-3+deb10u3_armhf.deb`
 
 `$ which flac`
 `/usr/bin/flac`
 
+`sudo reboot`
+
 `$ flac --version`
 `flac 1.3.2`
+
+You may find you need to install GStreamer if you encounter errors regarding Gst.
+
+Install GStreamer: Open a terminal and run the following command to install GStreamer and its base plugins:
+
+`sudo apt-get install gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good`
+This installs the GStreamer core, along with a set of essential and good-quality plugins.
+
+Next, you need to install the Python bindings for GStreamer. Use this command:
+
+`sudo apt-get install python3-gst-1.0`
+This command installs the GStreamer bindings for Python 3.
+
+Install Additional GStreamer Plugins (if needed): Depending on the audio formats you need to work with, you might need additional GStreamer plugins. For example, to install plugins for MP3 playback, use:
+
+`sudo apt-get install gstreamer1.0-plugins-ugly`
 
 ## Credit to:
 https://github.com/tinue/apa102-pi & Seeed Technology Limited for supplementary code.

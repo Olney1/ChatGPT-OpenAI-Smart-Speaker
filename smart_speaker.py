@@ -175,7 +175,7 @@ def play_audio_file():
     # play the audio file and wake speaking LEDs
     pixels.speak()
     # os.system("mpg321 response.mp3")
-    playsound("response.mp3", block=False)
+    playsound("response.mp3")
 
 def main():
     # run the program
