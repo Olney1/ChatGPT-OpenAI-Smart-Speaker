@@ -37,6 +37,9 @@ def recognize_speech():
     except sr.RequestError as e:
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
+    # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
+    playsound("holding.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+
     return speech
 
 def chatgpt_response(prompt):
@@ -45,7 +48,7 @@ def chatgpt_response(prompt):
         model=model_engine,
         messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
                   {"role": "user", "content": prompt}],
-        max_tokens=1024,
+        max_tokens=300,
         n=1,
         temperature=0.7,
     )
@@ -62,7 +65,6 @@ def generate_audio_file(message):
  
 def play_audio_file():
     # play the audio file
-    # os.system("mpg321 response.mp3")
     playsound("response.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
 
 def main():
