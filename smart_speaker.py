@@ -102,8 +102,8 @@ def recognize_speech():
                     return False
                 else:
                     print("Found wake word!")
-                    # pixels.wakeup()
                     # Wake up the display
+                    pixels.wakeup()
                     return True
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio")
