@@ -103,7 +103,7 @@ def recognize_speech():
                 else:
                     print("Found wake word!")
                     # Add recognition of activation messsage to improve the user experience.
-                    playsound("start.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+                    playsound("start.mp3")
                     # Wake up the display
                     pixels.wakeup()
                     return True
@@ -150,7 +150,7 @@ def speech():
  
 def chatgpt_response(prompt):
     # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
-    playsound("holding.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+    playsound("holding.mp3")
     # send the converted audio text to chatgpt
     response = client.chat.completions.create(
         model=model_engine,
