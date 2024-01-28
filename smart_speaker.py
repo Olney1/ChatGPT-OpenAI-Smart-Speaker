@@ -173,7 +173,7 @@ def chatgpt_response(prompt):
         model=model_engine,
         messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
                   {"role": "user", "content": prompt}],
-        max_tokens=1024,
+        max_tokens=400,
         n=1,
         temperature=0.7,
     )
