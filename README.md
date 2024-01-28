@@ -115,6 +115,7 @@ On the raspberry pi you may encounter an error regarding the installation of `fl
 See here for the resolution: https://raspberrypi.stackexchange.com/questions/137630/im-unable-to-install-flac-on-my-raspberry-pi-3
 
 The files you will need are going to be here: https://archive.raspbian.org/raspbian/pool/main/f/flac/
+Please note the links below may have changed or be updated, so please refer back to this link above for the latest file names.
  
 `sudo apt-get install libogg0`
 
