@@ -14,7 +14,7 @@ The `chat.py` script allows you to use speech recognition to input a prompt, sen
 
 ## The smart_speaker.py script
 
-The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi. You will need to have a speaker and microphone attached to your Raspberry Pi. I used both a USB microphone and USB speaker. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi. You will need to have a speaker and microphone attached to your Raspberry Pi. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
 
 ## Prerequisites - chat.py
 
