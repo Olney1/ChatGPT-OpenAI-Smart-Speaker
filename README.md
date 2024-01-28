@@ -34,7 +34,7 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 
 5. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`
 
-6. You need to have ffmpeg installed on your system. On a Raspberry Pi you can install it using: `sudo apt-get install ffmpeg`
+6. Pydub dependencies: You need to have ffmpeg installed on your system. On a Raspberry Pi you can install it using: `sudo apt-get install ffmpeg`. You may also need simpleaudio if you run into issues with the script hanging when finding the wake word, so it's best to install these packages just in case: `sudo apt-get install python3-dev` (for development headers to compile) and `install simpleaudio` (for a different backend to play mp3 files) and `sudo apt-get install libasound2-dev` (necessary dependencies).
 
 7. Install support for the lights on the RESPEAKER board. You'll need APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`
 

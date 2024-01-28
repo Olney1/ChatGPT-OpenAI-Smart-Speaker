@@ -105,7 +105,9 @@ def recognize_speech():
                     print("Found wake word!")
                     # Add recognition of activation messsage to improve the user experience.
                     try:
-                        start_audio_response = AudioSegment.from_mp3("start.mp3")
+                         # Add 1 second silence due to initial buffering how pydub handles audio in memory
+                        silence = AudioSegment.silent(duration=1000) 
+                        start_audio_response = silence + AudioSegment.from_mp3("start.mp3")
                         play(start_audio_response)
                     except:
                         pass
@@ -156,7 +158,9 @@ def speech():
 def chatgpt_response(prompt):
     # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
     try:
-        holding_audio_response = AudioSegment.from_mp3("holding.mp3")
+         # Add 1 second silence due to initial buffering how pydub handles audio in memory
+        silence = AudioSegment.silent(duration=1000) 
+        holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
         play(holding_audio_response)
     except:
         pass
@@ -183,8 +187,9 @@ def generate_audio_file(message):
 def play_audio_file():
     # play the audio file and wake speaking LEDs
     pixels.speak()
-    # os.system("mpg321 response.mp3")
-    audio_response = AudioSegment.from_mp3("response.mp3")
+    # Add 1 second silence due to initial buffering how pydub handles audio in memory
+    silence = AudioSegment.silent(duration=1000) 
+    audio_response = silence + AudioSegment.from_mp3("response.mp3")
     play(audio_response)
 
 def main():
