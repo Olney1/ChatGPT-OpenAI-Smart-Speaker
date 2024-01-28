@@ -5,7 +5,8 @@
 ## Demo
 
 [Demo using activation word "Jeffers"](videos/demo.mp4)
-
+<br>
+<br>
 
 ## The chat.py script
 
