@@ -3,7 +3,6 @@ from openai import OpenAI
 import pyaudio
 import speech_recognition as sr
 from gtts import gTTS
-from playsound import playsound
 from dotenv import load_dotenv
 import apa102
 import threading
@@ -14,6 +13,8 @@ except ImportError:
     import Queue as Queue
 from alexa_led_pattern import AlexaLedPattern
 from pathlib import Path
+from pydub import AudioSegment
+from pydub.playback import play
  
 # Load the environment variables
 load_dotenv()
@@ -103,7 +104,8 @@ def recognize_speech():
                 else:
                     print("Found wake word!")
                     # Add recognition of activation messsage to improve the user experience.
-                    playsound("start.mp3")
+                    start_audio_response = AudioSegment.from_mp3("start.mp3")
+                    play(start_audio_response)
                     # Wake up the display
                     pixels.wakeup()
                     return True
@@ -150,7 +152,8 @@ def speech():
  
 def chatgpt_response(prompt):
     # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
-    playsound("holding.mp3")
+    holding_audio_response = AudioSegment.from_mp3("holding.mp3")
+    play(holding_audio_response)
     # send the converted audio text to chatgpt
     response = client.chat.completions.create(
         model=model_engine,
@@ -175,7 +178,8 @@ def play_audio_file():
     # play the audio file and wake speaking LEDs
     pixels.speak()
     # os.system("mpg321 response.mp3")
-    playsound("response.mp3")
+    audio_response = AudioSegment.from_mp3("response.mp3")
+    play(audio_response)
 
 def main():
     # run the program
