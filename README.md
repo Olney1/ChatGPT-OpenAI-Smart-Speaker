@@ -142,5 +142,7 @@ Install Additional GStreamer Plugins (if needed): Depending on the audio formats
 
 `sudo apt-get install gstreamer1.0-plugins-ugly`
 
+To quit a running script on Pi from boot: `ALT + PrtScSysRq (or Print button) + K`
+
 ## Credit to:
 https://github.com/tinue/apa102-pi & Seeed Technology Limited for supplementary code.

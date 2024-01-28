@@ -87,10 +87,17 @@ model_engine = "gpt-4-0125-preview"
 language = 'en'
  
 def recognize_speech():
+    # Indicate to the user that the device is ready
+    # Add 1 second silence due to initial buffering how pydub handles audio in memory
+    silence = AudioSegment.silent(duration=1000) 
+    pixels.wakeup()
+    device_on = silence + AudioSegment.from_mp3("on.mp3")
+    play(device_on)
     # obtain audio from the microphone
     r = sr.Recognizer()
     with sr.Microphone() as source:
         try:
+            pixels.off()
             print("Listening...")
             audio_stream = r.listen(source)
             print("Waiting for wake word...")
