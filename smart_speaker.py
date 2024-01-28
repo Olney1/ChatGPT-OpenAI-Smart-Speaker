@@ -15,6 +15,9 @@ from alexa_led_pattern import AlexaLedPattern
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
+
+# Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
+os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
  
 # Load the environment variables
 load_dotenv()
