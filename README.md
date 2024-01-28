@@ -1,6 +1,6 @@
 # ChatGPT Smart Speaker (speech recognition and text-to-speech using OpenAI and gTTS)
 
-![Jeff the smart speaker](images/smart_speaker.png)
+![Jeff the smart speaker](images/smart_speaker_pi.png)
 
 ## Demo
 
