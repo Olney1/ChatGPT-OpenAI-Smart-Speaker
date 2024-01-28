@@ -71,20 +71,20 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program. You must not change the name of the variable `OPENAI_API_KEY`.
 2. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
 3. Run the script using `python smart_speaker.py`.
-4. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Jeffers'. You can change this to any name you want but always include an upper and lower case version of the name for better detection. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.
+4. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Jeffers'. You can change this to any name you want. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.
 5. The script will then generate a response using the text-to-speech model, and play the response as an audio file.
 
 
 ## Customisation
 
-- You can change the OpenAI model engine by modifying the value of `model_engine`. For example, to use the "davinci" engine, set `model_engine = "davinci"`.
+- You can change the OpenAI model engine by modifying the value of `model_engine`. For example, to use the "gpt-3.5-turbo" model for a cheaper and quicker response but with a knowledge cut-off to Sep 2021, set `model_engine = "gpt-3.5-turbo"`.
 - You can change the language of the generated audio file by modifying the value of `language`. For example, to generate audio in French, set `language = 'fr'`.
 - You can adjust the `temperature` parameter in the following line to control the randomness of the generated response:
 
 ```
 response = client.chat.completions.create(
         model=model_engine,
-        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"}, # Play about with more context here.
                   {"role": "user", "content": prompt}],
         max_tokens=1024,
         n=1,
