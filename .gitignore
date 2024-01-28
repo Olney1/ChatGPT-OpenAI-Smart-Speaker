@@ -1,5 +1,8 @@
 Credit to: https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
 
+.DS_Store
+
+
 # Django #
 *.log
 *.pot

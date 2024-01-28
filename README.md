@@ -2,6 +2,10 @@
 
 ![Jeff the smart speaker](images/pi.jpg)
 
+## Demo
+
+[Demo using activation word "Jeffers"](videos/latest.MOV)
+
 ## The chat.py script
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
