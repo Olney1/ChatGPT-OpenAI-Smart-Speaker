@@ -102,6 +102,8 @@ def recognize_speech():
                     print("Wake word not detected in the speech")
                     return False
                 else:
+                    # Wake up the display
+                    pixels.wakeup()
                     print("Found wake word!")
                     # Add recognition of activation messsage to improve the user experience.
                     try:
@@ -111,8 +113,6 @@ def recognize_speech():
                         play(start_audio_response)
                     except:
                         pass
-                    # Wake up the display
-                    pixels.wakeup()
                     return True
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio")
