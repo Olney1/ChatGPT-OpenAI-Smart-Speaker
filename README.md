@@ -4,7 +4,8 @@
 
 ## Demo
 
-[Demo using activation word "Jeffers"](videos/latest.MOV)
+[Demo using activation word "Jeffers"](videos/demo.mp4)
+
 
 ## The chat.py script
 
