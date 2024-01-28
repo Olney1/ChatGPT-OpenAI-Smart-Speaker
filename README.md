@@ -91,6 +91,8 @@ Higher values of `temperature` will result in more diverse and random responses,
 
 ## Important notes for Raspberry Pi Installation
 
+If you are using the same USB speaker in my video you will need to run `sudo apt-get install pulseaudio` to install support for this.
+
 If you want to use ReSpeaker for the lights, you can purchase this from most of the major online stores that stock Raspberry Pi. 
 Here is the online guide: https://wiki.seeedstudio.com/ReSpeaker_4_Mic_Array_for_Raspberry_Pi/
 
