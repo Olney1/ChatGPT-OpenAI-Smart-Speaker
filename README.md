@@ -15,7 +15,8 @@
 ## - [VReSpeaker 4-Mic Array](https://www.amazon.co.uk/Seeed-ReSpeaker-4-Mic-Array-Raspberry/dp/B076SSR1W1?&_encoding=UTF8&tag=olney104-21 "VReSpeaker 4-Mic Array")
 ## - [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
 
-
+<br>
+<br>
 ## Running on your PC/MAC (use the chat.py or test.py script)
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
@@ -163,6 +164,8 @@ To quit a running script on Pi from boot: `ALT + PrtScSysRq (or Print button) + 
 
 ## Credit to:
 https://github.com/tinue/apa102-pi & Seeed Technology Limited for supplementary code.
+
+<br><br>
 
 ## Read more about what is next for the project
 https://medium.com/@ben_olney/openai-smart-speaker-with-raspberry-pi-5e284d21a53e
