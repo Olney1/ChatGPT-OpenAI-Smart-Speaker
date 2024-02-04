@@ -20,11 +20,13 @@
 ## Running on your PC/MAC (use the chat.py or test.py script)
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
+
 <br>
 
 ## Running on Raspberry Pi (use the smart_speaker.py script)
 
 The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+
 <br>
 
 ## Prerequisites - chat.py
