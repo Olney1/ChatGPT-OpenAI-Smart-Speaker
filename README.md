@@ -8,6 +8,13 @@
 <br>
 <br>
 
+## Equipment List:
+
+## - [Raspberry Pi 4b 4GB](https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT?_encoding=UTF8&tag=olney104-21 "Raspberry Pi 4b 4GB")
+## - [VMini External USB Stereo Speaker](https://www.amazon.co.uk/Speakers-Computer-Speaker-Soundbar-Checkout/dp/B08NDJDFPS?_encoding=UTF8&tag=olney104-21 "VMini External USB Stereo Speaker")
+## - [VReSpeaker 4-Mic Array](https://www.amazon.co.uk/Seeed-ReSpeaker-4-Mic-Array-Raspberry/dp/B076SSR1W1?&_encoding=UTF8&tag=olney104-21 "VReSpeaker 4-Mic Array")
+## - [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
+
 ## The chat.py script
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
@@ -26,15 +33,6 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 
 ## Prerequisites - smart_speaker.py
 To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
-
-Equipment List:
-
-- [Raspberry Pi 4b 4GB](https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT?_encoding=UTF8&tag=olney104-21 "Raspberry Pi 4b 4GB")
-- [VMini External USB Stereo Speaker](https://www.amazon.co.uk/Speakers-Computer-Speaker-Soundbar-Checkout/dp/B08NDJDFPS?_encoding=UTF8&tag=olney104-21 "VMini External USB Stereo Speaker")
-- [VReSpeaker 4-Mic Array](https://www.amazon.co.uk/Seeed-ReSpeaker-4-Mic-Array-Raspberry/dp/B076SSR1W1?&_encoding=UTF8&tag=olney104-21 "VReSpeaker 4-Mic Array")
-- [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
-
-
 
 Run the following on your Raspberry Pi terminal:
 
