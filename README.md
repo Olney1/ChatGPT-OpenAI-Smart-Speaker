@@ -20,10 +20,12 @@
 ## Running on your PC/MAC (use the chat.py or test.py script)
 
 The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
+<br>
 
 ## Running on Raspberry Pi (use the smart_speaker.py script)
 
 The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+<br>
 
 ## Prerequisites - chat.py
 
@@ -32,6 +34,8 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 - Run `brew install portaudio` after installing HomeBrew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 - You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv` and `pyobjc` if you are on a Mac. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. 
 - Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero pyobjc`
+
+<br>
 
 ## Prerequisites - smart_speaker.py
 To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
@@ -67,6 +71,7 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 -Select your preferred Audio output device
 -Select Finish
 
+<br>
 
 ## Usage - applies to chat.py:
 
@@ -76,6 +81,8 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
 4. The script will send the spoken sentence to OpenAI, generate a response using the text-to-speech model, and play the response as an audio file.
 
+<br>
+
 ## Usage - applies to smart_speaker.py:
 1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program. You must not change the name of the variable `OPENAI_API_KEY`.
 2. Ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi.
@@ -83,6 +90,7 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 4. The script will prompt you to say the wake word which is programmed into the file `smart_speaker.py` as 'Jeffers'. You can change this to any name you want. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.
 5. The script will then generate a response using the text-to-speech model, and play the response as an audio file.
 
+<br>
 
 ## Customisation
 
@@ -103,6 +111,7 @@ response = client.chat.completions.create(
 ```
 
 Higher values of `temperature` will result in more diverse and random responses, while lower values will result in more deterministic responses.
+<br>
 
 ## Important notes for Raspberry Pi Installation
 
