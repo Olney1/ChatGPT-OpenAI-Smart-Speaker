@@ -35,6 +35,7 @@ Equipment List:
 - [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
 
 
+
 Run the following on your Raspberry Pi terminal:
 
 1. `sudo apt update`
@@ -163,3 +164,6 @@ To quit a running script on Pi from boot: `ALT + PrtScSysRq (or Print button) + 
 
 ## Credit to:
 https://github.com/tinue/apa102-pi & Seeed Technology Limited for supplementary code.
+
+## Read more about what is next for the project
+https://medium.com/@ben_olney/openai-smart-speaker-with-raspberry-pi-5e284d21a53e
