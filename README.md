@@ -113,6 +113,7 @@ response = client.chat.completions.create(
 ```
 
 Higher values of `temperature` will result in more diverse and random responses, while lower values will result in more deterministic responses.
+
 <br>
 
 ## Important notes for Raspberry Pi Installation
