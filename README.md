@@ -17,9 +17,9 @@
 
 <br>
 
-## Running on your PC/MAC (use the chat.py or test.py script)
+## Running on your PC/Mac (use the chat.py or test.py script)
 
-The `chat.py` script allows you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that this script was designed on a Mac, so additional dependencies may be required on Windows and Linux. 
+The `chat.py` and `test.py` scripts run directly on your PC/Mac. They both allow you to use speech recognition to input a prompt, send the prompt to OpenAI to generate a response, and then use gTTS to convert the response to an audio file and play the audio file on your Mac/PC. Your PC/Mac must have a working default microphone and speakers for this script to work. Please note that these scripts were designed on a Mac, so additional dependencies may be required on Windows and Linux. The difference between them is that `chat.py` is faster and always on and `test.py` acts like a standard smart speaker - only working once it hears the activation command (currently set to 'Jeffers').
 
 <br>
 
