@@ -35,7 +35,7 @@ Equipment List:
 - [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
 
 
-- Run the following on your Raspberry Pi terminal:
+Run the following on your Raspberry Pi terminal:
 
 1. `sudo apt update`
 
