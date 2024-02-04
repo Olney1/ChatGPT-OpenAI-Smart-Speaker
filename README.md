@@ -14,11 +14,11 @@ The `chat.py` script allows you to use speech recognition to input a prompt, sen
 
 ## The smart_speaker.py script
 
-The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi. You will need to have a speaker and microphone attached to your Raspberry Pi. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+The `smart_speaker.py` script implements the same functionality on a Raspberry Pi. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
 
 ## Prerequisites - chat.py
 
-- You need to have a valid OpenAI API key. You can sign up for a free API key at https://beta.openai.com/.
+- You need to have a valid OpenAI API key. You can sign up for a free API key at https://platform.openai.com.
 - You'll need to be running Python version 3.7.3 or higher. I am using 3.11.4 on a Mac and 3.7.3 on Raspberry Pi.
 - Run `brew install portaudio` after installing HomeBrew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 - You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv` and `pyobjc` if you are on a Mac. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. 
@@ -26,6 +26,14 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 
 ## Prerequisites - smart_speaker.py
 To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
+
+Equipment List:
+
+- [Raspberry Pi 4b 4GB](https://www.amazon.co.uk/Raspberry-Pi-Model-4GB/dp/B09TTNF8BT?_encoding=UTF8&tag=olney104-21 "Raspberry Pi 4b 4GB")
+- [VMini External USB Stereo Speaker](https://www.amazon.co.uk/Speakers-Computer-Speaker-Soundbar-Checkout/dp/B08NDJDFPS?_encoding=UTF8&tag=olney104-21 "VMini External USB Stereo Speaker")
+- [VReSpeaker 4-Mic Array](https://www.amazon.co.uk/Seeed-ReSpeaker-4-Mic-Array-Raspberry/dp/B076SSR1W1?&_encoding=UTF8&tag=olney104-21 "VReSpeaker 4-Mic Array")
+- [ANSMANN 10,000mAh Type-C 20W PD Power Bank](https://www.amazon.co.uk/Powerbank-10000mAh-capacity-Smartphones-rechargeable-Black/dp/B01NBNH2AL/?_encoding=UTF8&tag=olney104-21 "ANSMANN 10,000mAh Type-C 20W PD Power Bank")
+
 
 - Run the following on your Raspberry Pi terminal:
 
