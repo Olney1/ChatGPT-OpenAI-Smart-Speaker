@@ -212,6 +212,9 @@ def main():
     pixels.wakeup()
     device_on = silence + AudioSegment.from_mp3("on.mp3")
     play(device_on)
+    # Play the "Hello" audio file to welcome the user
+    hello = silence + AudioSegment.from_mp3("hello.mp3")
+    play(hello)
     while True:
         if recognise_speech():
             prompt = speech()

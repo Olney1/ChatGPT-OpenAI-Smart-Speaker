@@ -61,4 +61,17 @@ def stop():
 
     response.stream_to_file("stop.mp3")
 
-stop()
+
+def hello():
+
+    message = "Welcome, my name is Jeffers, I'm your helpful smart speaker. Just say my name and ask me anything."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("hello.mp3")
+
+hello()
