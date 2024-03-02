@@ -132,15 +132,14 @@ def speech():
     # obtain audio from the microphone
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        # Wake up the display now to indicate that the device is ready
-        pixels.wakeup()
-        print("Waiting for user to speak...")
         while True:
             try:
                 r.adjust_for_ambient_noise(source)
                 audio_stream = r.listen(source)
                 # recognize speech using Google Speech Recognition
-                # Run an addition conditional check to listen out for stop or cancel words
+                # Wake up the display now to indicate that the device is ready
+                pixels.wakeup()
+                print("Waiting for user to speak...")
                 try:
                     pixels.off()
                     # convert the audio to text
@@ -156,11 +155,13 @@ def speech():
                         pixels.think()
                         return speech
                 except sr.UnknownValueError:
+                    pixels.think()
                     print("Google Speech Recognition could not understand audio")
                     understand_error = silence + AudioSegment.from_mp3("understand.mp3")
-                    play(understand_error) 
+                    play(understand_error)
                     continue
                 except sr.RequestError as e:
+                    pixels.think()
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
                     # play the audio file for google issue and wake speaking LEDs
                     pixels.speak()
