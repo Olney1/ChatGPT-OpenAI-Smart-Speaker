@@ -174,24 +174,27 @@ def speech():
             
  
 def chatgpt_response(prompt):
-    # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
-    try:
-         # Add 1 second silence due to initial buffering how pydub handles audio in memory
-        silence = AudioSegment.silent(duration=1000) 
-        holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
-        play(holding_audio_response)
-    except:
-        pass
-    # send the converted audio text to chatgpt
-    response = client.chat.completions.create(
-        model=model_engine,
-        messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
-                  {"role": "user", "content": prompt}],
-        max_tokens=400,
-        n=1,
-        temperature=0.7,
-    )
-    return response
+    if prompt is not None:
+        # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
+        try:
+             # Add 1 second silence due to initial buffering how pydub handles audio in memory
+            silence = AudioSegment.silent(duration=1000) 
+            holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
+            play(holding_audio_response)
+        except:
+            pass
+        # send the converted audio text to chatgpt
+        response = client.chat.completions.create(
+            model=model_engine,
+            messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+                      {"role": "user", "content": prompt}],
+            max_tokens=400,
+            n=1,
+            temperature=0.7,
+        )
+        return response
+    else:
+        return None
  
 def generate_audio_file(message):
     speech_file_path = Path(__file__).parent / "response.mp3"
