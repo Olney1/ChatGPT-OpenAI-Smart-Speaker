@@ -15,6 +15,7 @@ from alexa_led_pattern import AlexaLedPattern
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
+import time
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -153,6 +154,7 @@ def speech():
                     print("Google Speech Recognition could not understand audio")
                     understand_error = AudioSegment.silent(duration=1000) + AudioSegment.from_mp3("sounds/understand.mp3")
                     play(understand_error)
+                    time.sleep(2)
                 except sr.RequestError as e:
                     pixels.think()
                     print(f"Could not request results from Google Speech Recognition service; {e}")
