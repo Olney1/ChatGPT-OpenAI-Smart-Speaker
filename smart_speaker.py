@@ -113,16 +113,7 @@ def recognise_speech():
                     print("Wake word not detected in the speech")
                     return False
                 else:
-                    print("Found wake word!")
-                    # Add recognition of activation messsage to improve the user experience.
-                    try:
-                         # Add 1 second silence due to initial buffering how pydub handles audio in memory
-                        silence = AudioSegment.silent(duration=1000) 
-                        start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
-                        play(start_audio_response)
-                        # We have moved the pixels wakeup to the speech function to ensure that the LEDs are on when the user is speaking
-                    except:
-                        pass
+                    print("Found wake word! Returning to main function...")
                     return True
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio")
@@ -137,13 +128,13 @@ def speech():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         while True:
+            # Now we wake the LEDs to indicate the optimum moment now when the user can speak
+            pixels.wakeup()
             try:
                 r.adjust_for_ambient_noise(source)
                 audio_stream = r.listen(source)
                 print("Waiting for user to speak...")
                 try:
-                    # Now we wake the LEDs to indicate the optimum moment now when the user can speak
-                    pixels.wakeup()
                     speech_text = r.recognize_google(audio_stream)
                     pixels.off()
                     print("Google Speech Recognition thinks you said " + speech_text)
@@ -213,6 +204,10 @@ def main():
     play(hello)
     while True:
         if recognise_speech():
+            # Add 1 second silence due to initial buffering how pydub handles audio in memory
+            silence = AudioSegment.silent(duration=1000) 
+            start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
+            play(start_audio_response)
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             response = chatgpt_response(prompt)
