@@ -20,7 +20,7 @@ from pydub.playback import play
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
 # Set the pre-prompt configuration here to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information.
-pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question:"
+pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
  
 # Load the environment variables
 load_dotenv()
@@ -134,11 +134,9 @@ def recognise_speech():
 
  
 def speech():
-    max_retries = 1
-    retries = 0
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        while retries < max_retries:
+        while True:
             try:
                 r.adjust_for_ambient_noise(source)
                 audio_stream = r.listen(source)
@@ -153,20 +151,16 @@ def speech():
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
-                    understand_error = silence + AudioSegment.from_mp3("sounds/understand.mp3")
+                    understand_error = AudioSegment.silent(duration=1000) + AudioSegment.from_mp3("sounds/understand.mp3")
                     play(understand_error)
                 except sr.RequestError as e:
                     pixels.think()
-                    print("Could not request results from Google Speech Recognition service; {0}".format(e))
-                    audio_response = silence + AudioSegment.from_mp3("sounds/google_issue.mp3")
+                    print(f"Could not request results from Google Speech Recognition service; {e}")
+                    audio_response = AudioSegment.silent(duration=1000) + AudioSegment.from_mp3("sounds/google_issue.mp3")
                     play(audio_response)
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
-                break
-            retries += 1  # Increment our retries here, outside the nested try-except blocks but inside the loop
-
-        if retries >= max_retries:
-            print("Max retries reached. Stopping speech recognition.")
+                break  # This allows the user to still manually exit the loop with a keyboard interrupt
 
  
 def chatgpt_response(prompt):
