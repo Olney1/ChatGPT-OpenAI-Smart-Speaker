@@ -116,6 +116,8 @@ def recognise_speech():
                         silence = AudioSegment.silent(duration=1000) 
                         start_audio_response = silence + AudioSegment.from_mp3("start.mp3")
                         play(start_audio_response)
+                        # Wake up the display now to indicate that the device is ready
+                        pixels.wakeup()
                     except:
                         pass
                     return True
