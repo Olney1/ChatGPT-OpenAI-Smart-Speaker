@@ -89,7 +89,7 @@ pixels = Pixels()
 model_engine = "gpt-4-0125-preview"
 language = 'en'
  
-def recognize_speech():
+def recognise_speech():
     # obtain audio from the microphone
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -218,7 +218,8 @@ def main():
     device_on = silence + AudioSegment.from_mp3("on.mp3")
     play(device_on)
     while True:
-        if recognize_speech():
+        # We need to add a check for recognise speech and also that chatgpt_response is not None
+        if recognise_speech() and chatgpt_response() is not None:
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             responses = chatgpt_response(prompt)
