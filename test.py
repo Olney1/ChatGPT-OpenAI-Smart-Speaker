@@ -36,7 +36,7 @@ def recognize_speech():
                     return False
                 else:
                     # Add recognition of activation messsage to improve the user experience.
-                    playsound("start.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+                    playsound("sounds/start.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
                     print("Found wake word!")
                     return True
             except sr.UnknownValueError:
@@ -73,7 +73,7 @@ def speech():
  
 def chatgpt_response(prompt):
     # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
-    playsound("holding.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+    playsound("sounds/holding.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
     # send the converted audio text to chatgpt
     response = client.chat.completions.create(
         model=model_engine,
@@ -87,7 +87,7 @@ def chatgpt_response(prompt):
  
 def generate_audio_file(message):
     # Add another checking messsage like the one below to improve the user experience.
-    playsound("checking.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
+    playsound("sounds/checking.mp3") # There’s an optional second argument, block, which is set to True by default. Setting it to False makes the function run asynchronously.
     speech_file_path = Path(__file__).parent / "response.mp3"
     response = client.audio.speech.create(
     model="tts-1",

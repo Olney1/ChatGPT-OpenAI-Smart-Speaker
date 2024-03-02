@@ -114,7 +114,7 @@ def recognise_speech():
                     try:
                          # Add 1 second silence due to initial buffering how pydub handles audio in memory
                         silence = AudioSegment.silent(duration=1000) 
-                        start_audio_response = silence + AudioSegment.from_mp3("start.mp3")
+                        start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
                         play(start_audio_response)
                         # Wake up the display now to indicate that the device is ready
                         pixels.wakeup()
@@ -131,7 +131,7 @@ def recognise_speech():
 
  
 def speech():
-    max_retries = 2
+    max_retries = 1
     retries = 0
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -150,12 +150,12 @@ def speech():
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
-                    understand_error = silence + AudioSegment.from_mp3("understand.mp3")
+                    understand_error = silence + AudioSegment.from_mp3("sounds/understand.mp3")
                     play(understand_error)
                 except sr.RequestError as e:
                     pixels.think()
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
-                    audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
+                    audio_response = silence + AudioSegment.from_mp3("sounds/google_issue.mp3")
                     play(audio_response)
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
@@ -170,7 +170,7 @@ def chatgpt_response(prompt):
     if prompt is not None:
         # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
         silence = AudioSegment.silent(duration=1000) 
-        holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
+        holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
         play(holding_audio_response)
         # send the converted audio text to chatgpt
         response = client.chat.completions.create(
@@ -181,6 +181,9 @@ def chatgpt_response(prompt):
             n=1,
             temperature=0.7,
         )
+        # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
+        checking_on_that = silence + AudioSegment.from_mp3("checking.mp3")
+        play(checking_on_that)
         return response
     else:
         return None
@@ -204,10 +207,10 @@ def main():
     # run the program
     # Indicate to the user that the device is ready
     pixels.wakeup()
-    device_on = silence + AudioSegment.from_mp3("on.mp3")
+    device_on = silence + AudioSegment.from_mp3("sounds/on.mp3")
     play(device_on)
     # Play the "Hello" audio file to welcome the user
-    hello = silence + AudioSegment.from_mp3("hello.mp3")
+    hello = silence + AudioSegment.from_mp3("sounds/hello.mp3")
     play(hello)
     while True:
         if recognise_speech():
@@ -222,6 +225,7 @@ def main():
                 pixels.off()
             else:
                 print("No prompt to send to OpenAI")
+                # We continue to listen for the wake word
         else:
             print("Speech was not recognised")
             pixels.off()
