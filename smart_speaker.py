@@ -120,8 +120,7 @@ def recognise_speech():
                         silence = AudioSegment.silent(duration=1000) 
                         start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
                         play(start_audio_response)
-                        # Wake up the display now to indicate that the device is ready
-                        pixels.wakeup()
+                        # We have moved the pixels wakeup to the speech function to ensure that the LEDs are on when the user is speaking
                     except:
                         pass
                     return True
