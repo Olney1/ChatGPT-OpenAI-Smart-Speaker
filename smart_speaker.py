@@ -116,8 +116,6 @@ def recognise_speech():
                         silence = AudioSegment.silent(duration=1000) 
                         start_audio_response = silence + AudioSegment.from_mp3("start.mp3")
                         play(start_audio_response)
-                        # Wake up the display now to indicate that the device is ready
-                        pixels.wakeup()
                     except:
                         pass
                     return True
@@ -134,6 +132,8 @@ def speech():
     # obtain audio from the microphone
     r = sr.Recognizer()
     with sr.Microphone() as source:
+        # Wake up the display now to indicate that the device is ready
+        pixels.wakeup()
         print("Waiting for user to speak...")
         while True:
             try:
@@ -146,27 +146,25 @@ def speech():
                     # convert the audio to text
                     print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
                     speech = r.recognize_google(audio_stream)
-                    # wake up thinking LEDs
-                    pixels.think()
                     if "jeffers stop" in speech or "jeffers cancel" in speech:
                         print("Stop word detected in the speech")
                         stop_audio_response = silence + AudioSegment.from_mp3("stop.mp3")
                         play(stop_audio_response)
                         return False
                     else:
+                        # wake up thinking LEDs
+                        pixels.think()
                         return speech
                 except sr.UnknownValueError:
                     print("Google Speech Recognition could not understand audio")
                     understand_error = silence + AudioSegment.from_mp3("understand.mp3")
                     play(understand_error) 
-                    pixels.off()
                     continue
                 except sr.RequestError as e:
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
                     # play the audio file for google issue and wake speaking LEDs
                     pixels.speak()
                     audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
-                    pixels.off()
                     continue
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
