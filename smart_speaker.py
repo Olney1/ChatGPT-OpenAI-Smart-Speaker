@@ -147,15 +147,9 @@ def speech():
                     # convert the audio to text
                     print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
                     speech = r.recognize_google(audio_stream)
-                    if "jeffers stop" in speech or "jeffers cancel" in speech:
-                        print("Stop word detected in the speech")
-                        stop_audio_response = silence + AudioSegment.from_mp3("stop.mp3")
-                        play(stop_audio_response)
-                        return False
-                    else:
-                        # wake up thinking LEDs
-                        pixels.think()
-                        return speech
+                    # wake up thinking LEDs
+                    pixels.think()
+                    return speech
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
@@ -221,14 +215,13 @@ def main():
     while True:
         if recognise_speech():
             prompt = speech()
-            if speech():
-                print(f"This is the prompt being sent to OpenAI: {prompt}")
-                responses = chatgpt_response(prompt)
-                message = responses.choices[0].message.content
-                print(message)
-                generate_audio_file(message)
-                play_wake_up_audio()
-                pixels.off()
+            print(f"This is the prompt being sent to OpenAI: {prompt}")
+            responses = chatgpt_response(prompt)
+            message = responses.choices[0].message.content
+            print(message)
+            generate_audio_file(message)
+            play_wake_up_audio()
+            pixels.off()
         else:
             print("Speech was not recognised")
             pixels.off()
