@@ -182,7 +182,7 @@ def chatgpt_response(prompt):
             temperature=0.7,
         )
         # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
-        checking_on_that = silence + AudioSegment.from_mp3("checking.mp3")
+        checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
         play(checking_on_that)
         return response
     else:
