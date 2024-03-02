@@ -20,7 +20,7 @@ import time
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
-# Set the pre-prompt configuration here to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information.
+# Set the pre-prompt configuration here to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
  
 # Load the environment variables
@@ -174,7 +174,7 @@ def chatgpt_response(prompt):
         # send the converted audio text to chatgpt
         response = client.chat.completions.create(
             model=model_engine,
-            messages=[{"role": "system", "content": "You are a helpful smart speaker called Jeffers!"},
+            messages=[{"role": "system", "content": pre_prompt},
                       {"role": "user", "content": prompt}],
             max_tokens=400,
             n=1,
@@ -213,15 +213,16 @@ def main():
     play(hello)
     while True:
         if recognise_speech():
-            prompt = pre_prompt + speech()
-            print(f"This is the prompt being sent to OpenAI: {prompt}")
-            response = chatgpt_response(prompt)
-            if response is not None:
-                message = response.choices[0].message.content
-                print(message)
-                generate_audio_file(message)
-                play_wake_up_audio()
-                pixels.off()
+            if "sorry I didn't quite get that" not in speech():
+                prompt = speech()
+                print(f"This is the prompt being sent to OpenAI: {prompt}")
+                response = chatgpt_response(prompt)
+                if response is not None:
+                    message = response.choices[0].message.content
+                    print(message)
+                    generate_audio_file(message)
+                    play_wake_up_audio()
+                    pixels.off()
             else:
                 print("No prompt to send to OpenAI")
                 # We continue to listen for the wake word
