@@ -36,4 +36,29 @@ def create_google_speech_issue():
     response.stream_to_file("google_issue.mp3")
 
 
-create_google_speech_issue()
+def understand_speech_issue():
+
+    message = "Sorry, I didn't quite get that."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("understand.mp3")
+
+
+def stop():
+
+    message = "No worries, I'll be here when you need me."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("stop.mp3")
+
+stop()

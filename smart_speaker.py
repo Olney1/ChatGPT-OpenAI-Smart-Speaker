@@ -108,6 +108,13 @@ def recognize_speech():
                 if "jeffers" not in words:
                     print("Wake word not detected in the speech")
                     return False
+                # Run an addition conditional check to listen out for stop or cancel words
+                elif "stop" in words or "cancel" in words:
+                    print("Stop word detected in the speech")
+                    pixels.think()
+                    stop_audio_response = silence + AudioSegment.from_mp3("stop.mp3")
+                    play(stop_audio_response)
+                    return False
                 else:
                     # Wake up the display
                     pixels.wakeup()
@@ -150,21 +157,17 @@ def speech():
                     return speech
                 except sr.UnknownValueError:
                     print("Google Speech Recognition could not understand audio")
-                    error_sound = silence + AudioSegment.from_mp3("error.mp3")
-                    play(error_sound) 
+                    understand_error = silence + AudioSegment.from_mp3("understand.mp3")
+                    play(understand_error) 
                     pixels.off()
-                    print("Waiting for user to speak...")
-                    # Wake up the display
-                    pixels.wakeup()
-                    continue
+                    recognize_speech()
                 except sr.RequestError as e:
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
                     # play the audio file for google issue and wake speaking LEDs
                     pixels.speak()
                     audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
                     pixels.off()
-                    print("Waiting for user to speak...")
-                    continue
+                    recognize_speech()
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
                 break
