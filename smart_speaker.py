@@ -218,16 +218,16 @@ def main():
     device_on = silence + AudioSegment.from_mp3("on.mp3")
     play(device_on)
     while True:
-        # We need to add a check for recognise speech and also that chatgpt_response is not None
-        if recognise_speech() and chatgpt_response(prompt) is not None:
+        if recognise_speech():
             prompt = speech()
-            print(f"This is the prompt being sent to OpenAI: {prompt}")
-            responses = chatgpt_response(prompt)
-            message = responses.choices[0].message.content
-            print(message)
-            generate_audio_file(message)
-            play_wake_up_audio()
-            pixels.off()
+            if speech():
+                print(f"This is the prompt being sent to OpenAI: {prompt}")
+                responses = chatgpt_response(prompt)
+                message = responses.choices[0].message.content
+                print(message)
+                generate_audio_file(message)
+                play_wake_up_audio()
+                pixels.off()
         else:
             print("Speech was not recognised")
             pixels.off()
