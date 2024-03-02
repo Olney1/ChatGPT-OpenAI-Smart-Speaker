@@ -148,7 +148,11 @@ def speech():
                     pixels.off()
                     print("Google Speech Recognition thinks you said " + speech_text)
                     pixels.think()
-                    return speech_text
+                    words = speech.lower().split()
+                    if "sorry I didn't quite get that" in words:
+                        continue
+                    else:
+                        return speech_text
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
@@ -213,16 +217,15 @@ def main():
     play(hello)
     while True:
         if recognise_speech():
-            if "sorry I didn't quite get that" not in speech():
-                prompt = speech()
-                print(f"This is the prompt being sent to OpenAI: {prompt}")
-                response = chatgpt_response(prompt)
-                if response is not None:
-                    message = response.choices[0].message.content
-                    print(message)
-                    generate_audio_file(message)
-                    play_wake_up_audio()
-                    pixels.off()
+            prompt = speech()
+            print(f"This is the prompt being sent to OpenAI: {prompt}")
+            response = chatgpt_response(prompt)
+            if response is not None:
+                message = response.choices[0].message.content
+                print(message)
+                generate_audio_file(message)
+                play_wake_up_audio()
+                pixels.off()
             else:
                 print("No prompt to send to OpenAI")
                 # We continue to listen for the wake word
