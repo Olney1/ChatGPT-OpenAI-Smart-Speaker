@@ -219,7 +219,7 @@ def main():
     play(device_on)
     while True:
         # We need to add a check for recognise speech and also that chatgpt_response is not None
-        if recognise_speech() and chatgpt_response() is not None:
+        if recognise_speech() and chatgpt_response(prompt) is not None:
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             responses = chatgpt_response(prompt)
