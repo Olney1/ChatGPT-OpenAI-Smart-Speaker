@@ -23,6 +23,9 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 load_dotenv()
 # Create an OpenAI API client
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+# Add 1 second silence globally due to initial buffering how pydub handles audio in memory
+silence = AudioSegment.silent(duration=1000) 
  
 # load pixels Class
 class Pixels:
@@ -138,6 +141,7 @@ def speech():
                 audio_stream = r.listen(source)
                 # recognize speech using Google Speech Recognition
                 try:
+                    pixels.off()
                     # convert the audio to text
                     print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
                     speech = r.recognize_google(audio_stream)
@@ -146,11 +150,18 @@ def speech():
                     return speech
                 except sr.UnknownValueError:
                     print("Google Speech Recognition could not understand audio")
+                    error_sound = silence + AudioSegment.from_mp3("error.mp3")
+                    play(error_sound) 
                     pixels.off()
                     print("Waiting for user to speak...")
+                    # Wake up the display
+                    pixels.wakeup()
                     continue
                 except sr.RequestError as e:
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
+                    # play the audio file for google issue and wake speaking LEDs
+                    pixels.speak()
+                    audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
                     pixels.off()
                     print("Waiting for user to speak...")
                     continue
@@ -188,19 +199,15 @@ def generate_audio_file(message):
 )
     response.stream_to_file(speech_file_path)
  
-def play_audio_file():
+def play_wake_up_audio():
     # play the audio file and wake speaking LEDs
     pixels.speak()
-    # Add 1 second silence due to initial buffering how pydub handles audio in memory
-    silence = AudioSegment.silent(duration=1000) 
     audio_response = silence + AudioSegment.from_mp3("response.mp3")
     play(audio_response)
 
 def main():
     # run the program
     # Indicate to the user that the device is ready
-    # Add 1 second silence due to initial buffering how pydub handles audio in memory
-    silence = AudioSegment.silent(duration=1000) 
     pixels.wakeup()
     device_on = silence + AudioSegment.from_mp3("on.mp3")
     play(device_on)
@@ -212,7 +219,7 @@ def main():
             message = responses.choices[0].message.content
             print(message)
             generate_audio_file(message)
-            play_audio_file()
+            play_wake_up_audio()
             pixels.off()
         else:
             print("Speech was not recognised")
