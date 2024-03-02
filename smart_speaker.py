@@ -18,6 +18,9 @@ from pydub.playback import play
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
+
+# Set the pre-prompt configuration here to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information.
+pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question:"
  
 # Load the environment variables
 load_dotenv()
@@ -214,7 +217,7 @@ def main():
     play(hello)
     while True:
         if recognise_speech():
-            prompt = speech()
+            prompt = pre_prompt + speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             response = chatgpt_response(prompt)
             if response is not None:
