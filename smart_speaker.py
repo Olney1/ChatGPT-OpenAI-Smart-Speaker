@@ -131,55 +131,47 @@ def recognise_speech():
 
  
 def speech():
-    # obtain audio from the microphone
+    max_retries = 2
+    retries = 0
     r = sr.Recognizer()
     with sr.Microphone() as source:
-        while True:
+        while retries < max_retries:
             try:
                 r.adjust_for_ambient_noise(source)
                 audio_stream = r.listen(source)
-                # recognize speech using Google Speech Recognition
-                # Wake up the display now to indicate that the device is ready
                 pixels.wakeup()
                 print("Waiting for user to speak...")
                 try:
+                    speech_text = r.recognize_google(audio_stream)
                     pixels.off()
-                    # convert the audio to text
-                    print("Google Speech Recognition thinks you said " + r.recognize_google(audio_stream))
-                    speech = r.recognize_google(audio_stream)
-                    # wake up thinking LEDs
+                    print("Google Speech Recognition thinks you said " + speech_text)
                     pixels.think()
-                    return speech
+                    return speech_text
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
                     understand_error = silence + AudioSegment.from_mp3("understand.mp3")
                     play(understand_error)
-                    continue
                 except sr.RequestError as e:
                     pixels.think()
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
-                    # play the audio file for google issue and wake speaking LEDs
-                    pixels.speak()
                     audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
-                    continue
+                    play(audio_response)
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
                 break
-            
+            retries += 1  # Increment our retries here, outside the nested try-except blocks but inside the loop
+
+        if retries >= max_retries:
+            print("Max retries reached. Stopping speech recognition.")
+
  
 def chatgpt_response(prompt):
     if prompt is not None:
-        # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
-        try:
-            if "sorry I didn't quite get that" in prompt.lower().split():
-                return None
-             # Add 1 second silence due to initial buffering how pydub handles audio in memory
-            silence = AudioSegment.silent(duration=1000) 
-            holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
-            play(holding_audio_response)
-        except:
-            pass
+        # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
+        silence = AudioSegment.silent(duration=1000) 
+        holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
+        play(holding_audio_response)
         # send the converted audio text to chatgpt
         response = client.chat.completions.create(
             model=model_engine,
