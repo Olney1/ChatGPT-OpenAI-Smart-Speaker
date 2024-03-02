@@ -148,17 +148,13 @@ def speech():
                     pixels.off()
                     print("Google Speech Recognition thinks you said " + speech_text)
                     pixels.think()
-                    words = speech.lower().split()
-                    if "sorry I didn't quite get that" in words:
-                        continue
-                    else:
-                        return speech_text
+                    return speech_text
                 except sr.UnknownValueError:
                     pixels.think()
                     print("Google Speech Recognition could not understand audio")
                     understand_error = AudioSegment.silent(duration=1000) + AudioSegment.from_mp3("sounds/understand.mp3")
                     play(understand_error)
-                    time.sleep(2)
+                    time.sleep(4)
                 except sr.RequestError as e:
                     pixels.think()
                     print(f"Could not request results from Google Speech Recognition service; {e}")
