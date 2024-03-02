@@ -113,7 +113,11 @@ def recognise_speech():
                     print("Wake word not detected in the speech")
                     return False
                 else:
-                    print("Found wake word! Returning to main function...")
+                    print("Found wake word!")
+                    # Add 1 second silence due to initial buffering how pydub handles audio in memory
+                    silence = AudioSegment.silent(duration=1000) 
+                    start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
+                    play(start_audio_response)
                     return True
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio")
@@ -204,10 +208,6 @@ def main():
     play(hello)
     while True:
         if recognise_speech():
-            # Add 1 second silence due to initial buffering how pydub handles audio in memory
-            silence = AudioSegment.silent(duration=1000) 
-            start_audio_response = silence + AudioSegment.from_mp3("sounds/start.mp3")
-            play(start_audio_response)
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
             response = chatgpt_response(prompt)
