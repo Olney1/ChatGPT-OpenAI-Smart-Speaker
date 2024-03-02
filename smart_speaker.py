@@ -172,6 +172,8 @@ def chatgpt_response(prompt):
     if prompt is not None:
         # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed.
         try:
+            if "sorry I didn't quite get that" in prompt.lower().split():
+                return None
              # Add 1 second silence due to initial buffering how pydub handles audio in memory
             silence = AudioSegment.silent(duration=1000) 
             holding_audio_response = silence + AudioSegment.from_mp3("holding.mp3")
@@ -219,12 +221,15 @@ def main():
         if recognise_speech():
             prompt = speech()
             print(f"This is the prompt being sent to OpenAI: {prompt}")
-            responses = chatgpt_response(prompt)
-            message = responses.choices[0].message.content
-            print(message)
-            generate_audio_file(message)
-            play_wake_up_audio()
-            pixels.off()
+            response = chatgpt_response(prompt)
+            if response is not None:
+                message = response.choices[0].message.content
+                print(message)
+                generate_audio_file(message)
+                play_wake_up_audio()
+                pixels.off()
+            else:
+                print("No prompt to send to OpenAI")
         else:
             print("Speech was not recognised")
             pixels.off()
