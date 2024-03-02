@@ -160,14 +160,14 @@ def speech():
                     understand_error = silence + AudioSegment.from_mp3("understand.mp3")
                     play(understand_error) 
                     pixels.off()
-                    return None
+                    continue
                 except sr.RequestError as e:
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
                     # play the audio file for google issue and wake speaking LEDs
                     pixels.speak()
                     audio_response = silence + AudioSegment.from_mp3("google_issue.mp3")
                     pixels.off()
-                    return None
+                    continue
             except KeyboardInterrupt:
                 print("Interrupted by User Keyboard")
                 break
