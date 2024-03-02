@@ -140,9 +140,10 @@ def speech():
             try:
                 r.adjust_for_ambient_noise(source)
                 audio_stream = r.listen(source)
-                pixels.wakeup()
                 print("Waiting for user to speak...")
                 try:
+                    # Now we wake the LEDs to indicate the optimum moment now when the user can speak
+                    pixels.wakeup()
                     speech_text = r.recognize_google(audio_stream)
                     pixels.off()
                     print("Google Speech Recognition thinks you said " + speech_text)
