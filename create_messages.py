@@ -19,7 +19,7 @@ def create_holding_message():
         input=message,
     )
 
-    response.stream_to_file("holding.mp3")
+    response.stream_to_file("sounds/holding.mp3")
 
 
 
@@ -33,7 +33,7 @@ def create_google_speech_issue():
         input=message,
     )
 
-    response.stream_to_file("google_issue.mp3")
+    response.stream_to_file("sounds/google_issue.mp3")
 
 
 def understand_speech_issue():
@@ -46,7 +46,7 @@ def understand_speech_issue():
         input=message,
     )
 
-    response.stream_to_file("understand.mp3")
+    response.stream_to_file("sounds/understand.mp3")
 
 
 def stop():
@@ -59,7 +59,7 @@ def stop():
         input=message,
     )
 
-    response.stream_to_file("stop.mp3")
+    response.stream_to_file("sounds/stop.mp3")
 
 
 def hello():
@@ -72,6 +72,19 @@ def hello():
         input=message,
     )
 
-    response.stream_to_file("hello.mp3")
+    response.stream_to_file("sounds/hello.mp3")
 
-hello()
+
+def create_picovoice_issue():
+
+    message = "Sorry, there was an issue with the PicoVoice Service."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/picovoice_issue.mp3")
+
+create_picovoice_issue()

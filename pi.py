@@ -19,14 +19,21 @@ import time
 import pvporcupine
 import struct
 
+# Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
+# This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+# We add 1 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=1000)
+
+# We set the OpenAI model and language settings here
+model_engine = "gpt-4-0125-preview"
+language = 'en'
 
 class Pixels:
     PIXELS_N = 12
@@ -82,12 +89,11 @@ class Pixels:
  
         self.dev.show()
 
+# Instantiate the Pixels class
 pixels = Pixels()
 
-model_engine = "gpt-4-0125-preview"
-language = 'en'
-
 def detect_wake_word():
+    # Here we use the Porcupine wake word detection engine to detect the wake word "Jeffers" and then proceed to listen for the user's question.
     porcupine = None
     pa = None
     audio_stream = None
@@ -114,6 +120,11 @@ def detect_wake_word():
             if result >= 0:
                 print("Wake word detected")
                 return True
+    except:
+        # Deal with any errors that may occur from using the PicoVoice Service (https://console.picovoice.ai/)
+        print("Error with wake word detection, Porcupine or the PicoVoice Service.")
+        error_response = silence + AudioSegment.from_mp3("sounds/picovoice_issue.mp3")
+        play(error_response)
     finally:
         if audio_stream is not None:
             audio_stream.close()
@@ -124,6 +135,7 @@ def detect_wake_word():
     return False
 
 def recognise_speech():
+    # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening for your question...")
@@ -140,6 +152,7 @@ def recognise_speech():
     return None
 
 def chatgpt_response(prompt):
+    # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
     if prompt is not None:
         # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
         silence = AudioSegment.silent(duration=1000) 
@@ -162,6 +175,7 @@ def chatgpt_response(prompt):
         return None
  
 def generate_audio_file(message):
+    # This is a standalone function to generate an audio file from the response from OpenAI's ChatGPT model.
     speech_file_path = Path(__file__).parent / "response.mp3"
     response = client.audio.speech.create(
     model="tts-1",
@@ -170,13 +184,14 @@ def generate_audio_file(message):
 )
     response.stream_to_file(speech_file_path)
  
-def play_wake_up_audio():
-    # play the audio file and wake speaking LEDs
+def play_response():
+    # This is a standalone function to which we can call to play the audio file and wake speaking LEDs to indicate that the smart speaker is responding to the user.
     pixels.speak()
     audio_response = silence + AudioSegment.from_mp3("response.mp3")
     play(audio_response)
 
 def main():
+    # This is the main function that runs the program.
     pixels.wakeup()
     device_on = silence + AudioSegment.from_mp3("sounds/on.mp3")
     play(device_on)
@@ -186,7 +201,7 @@ def main():
     while True:
         print("Waiting for wake word...")
         if detect_wake_word():
-            pixels.listen()  # Indicate that it's listening
+            pixels.listen()  # Indicate that the speaker is listening
             prompt = recognise_speech()
             if prompt:
                 print(f"This is the prompt being sent to OpenAI: {prompt}")
@@ -195,7 +210,7 @@ def main():
                     message = response.choices[0].message.content
                     print(message)
                     generate_audio_file(message)
-                    play_wake_up_audio()
+                    play_response()
                     pixels.off()
                 else:
                     print("No prompt to send to OpenAI")
