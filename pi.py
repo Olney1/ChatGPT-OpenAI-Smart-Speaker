@@ -182,6 +182,7 @@ def main():
     play(device_on)
     hello = silence + AudioSegment.from_mp3("sounds/hello.mp3")
     play(hello)
+    pixels.off()
     while True:
         print("Waiting for wake word...")
         if detect_wake_word():
