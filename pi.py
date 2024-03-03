@@ -183,7 +183,9 @@ def main():
     hello = silence + AudioSegment.from_mp3("sounds/hello.mp3")
     play(hello)
     while True:
+        print("Waiting for wake word...")
         if detect_wake_word():
+            pixels.listen()  # Indicate that it's listening
             prompt = recognise_speech()
             if prompt:
                 print(f"This is the prompt being sent to OpenAI: {prompt}")
@@ -196,12 +198,11 @@ def main():
                     pixels.off()
                 else:
                     print("No prompt to send to OpenAI")
+                    pixels.off()
             else:
                 print("Speech was not recognised or there was an error.")
                 pixels.off()
-        else:
-            print("Wake word not detected.")
-            pixels.off()
+        # After processing (or failure to process), the loop will continue, returning to wake word detection.
 
 if __name__ == "__main__":
     main()
