@@ -93,7 +93,7 @@ def detect_wake_word():
     audio_stream = None
 
     try:
-        porcupine = pvporcupine.create(keywords=["jeffers"])  # Adjust according to the actual keyword
+        porcupine = pvporcupine.create(keywords=["jeffers"], access_key=os.environ.get("ACCESS_KEY"))  # Customise the wake word here to your own preference. You will also need to pass your own access key from Porcupine (https://console.picovoice.ai/) as an environment variable.
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
             rate=porcupine.sample_rate,
