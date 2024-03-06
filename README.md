@@ -25,9 +25,9 @@ The `chat.py` and `test.py` scripts run directly on your PC/Mac. They both allow
 
 ## Running on Raspberry Pi (use the smart_speaker.py or pi.py scripts)
 
-The `smart_speaker.py` script implements the same functionality on a Raspberry Pi in the easiest way but utilises the RESPEAKER light show and other voice feedback. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
+![Deprecated](https://img.shields.io/badge/-DEPRECATED-red)The `smart_speaker.py` script implements the same functionality on a Raspberry Pi in the easiest way but utilises the RESPEAKER light show and other voice feedback. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
 
-![New](https://img.shields.io/badge/-NEW-red)
+![New](https://img.shields.io/badge/-NEW-green)
  The `pi.py` script is a new and more advanced custom version of the `smart_speaker.py` script and is the most advanced script similar to a real smart speaker. The purpose of this script is to offload the wake up word to a custom model build via PicoVoice (`https://console.picovoice.ai/`). This improves efficiency and long term usage reliability. This script will be the main script for development moving forward due to greater reliability and more advanced features to be added regularly.
 
 <br>
@@ -42,7 +42,7 @@ The `smart_speaker.py` script implements the same functionality on a Raspberry P
 
 <br>
 
-## Prerequisites - smart_speaker.py
+## Prerequisites - smart_speaker.py ![Deprecated](https://img.shields.io/badge/-DEPRECATED-red)
 To run smart_speaker.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
 
 You will also need a developer account and API key with OpenAI (`https://platform.openai.com/overview`) 
@@ -80,7 +80,7 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 
 <br>
 
-## Prerequisites - pi.py
+## Prerequisites - pi.py ![New](https://img.shields.io/badge/-NEW-green)
 To run pi.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
 
 You will also need a developer account and API key with OpenAI (`https://platform.openai.com/overview`) and an Access Key and Custom Voice Model with PicoVoice (`https://console.picovoice.ai/`) and (`https://console.picovoice.ai/ppn` respectively. Please create your own voice model and download the correct version for use on a Raspberry Pi)
