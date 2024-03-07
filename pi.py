@@ -199,7 +199,7 @@ def generate_audio_file(message):
     response = client.audio.speech.create(
     model="tts-1",
     voice="fable",
-    input=message
+    input=str(message)
 )
     response.stream_to_file(speech_file_path)
  
