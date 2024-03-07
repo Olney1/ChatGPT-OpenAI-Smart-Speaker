@@ -226,16 +226,12 @@ def main():
                 print(f"This is the prompt being sent to Anthropic: {prompt}")
                 response = anthropic_response(prompt)
                 if response:
-                    content_blocks = response.content
-                    if content_blocks and isinstance(content_blocks, list):
-                        content_block = content_blocks[0]
-                        if isinstance(content_block, anthropic.ContentBlock):
-                            message = content_block.text
-                        else:
-                            message = str(content_block)
+                    content = response.content
+                    if isinstance(content, str):
+                        message = content
                     else:
-                        message = str(content_blocks)
-    
+                        message = str(content)
+                    
                     print(message)
                     generate_audio_file(message)
                     play_response()
