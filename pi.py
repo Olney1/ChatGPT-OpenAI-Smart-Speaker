@@ -194,14 +194,18 @@ def anthropic_response(prompt):
         return None
  
 def generate_audio_file(message):
-    # This is a standalone function to generate an audio file from the response from OpenAI's ChatGPT model.
+    # This is a standalone function to stream an audio via OpenAI's TTS API
     speech_file_path = Path(__file__).parent / "response.mp3"
-    response = client.audio.speech.create(
-    model="tts-1",
-    voice="fable",
-    input=str(message)
-)
-    response.stream_to_file(speech_file_path)
+    
+    with open(speech_file_path, "wb") as file:
+        response = client.audio.speech.with_streaming_response.create(
+            model="tts-1",
+            voice="fable",
+            input=message
+        )
+        
+        for chunk in response:
+            file.write(chunk)
  
 def play_response():
     # This is a standalone function to which we can call to play the audio file and wake speaking LEDs to indicate that the smart speaker is responding to the user.
@@ -227,11 +231,15 @@ def main():
                 response = anthropic_response(prompt)
                 if response:
                     content = response.content
-                    if isinstance(content, str):
-                        message = content
+                    if isinstance(content, list) and len(content) > 0:
+                        content_block = content[0]
+                        if isinstance(content_block, dict) and 'text' in content_block:
+                            message = content_block['text']
+                        else:
+                            message = str(content_block)
                     else:
                         message = str(content)
-                    
+    
                     print(message)
                     generate_audio_file(message)
                     play_response()
