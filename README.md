@@ -95,7 +95,7 @@ Run the following on your Raspberry Pi terminal:
 
 3. `git clone https://github.com/Olney1/ChatGPT-OpenAI-Smart-Speaker`
 
-4. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `pydub, python-dotenv`, `pvporcupine`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
+4. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `pydub, python-dotenv`, `pvporcupine`, `anthropic`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
 Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS pydub python-dotenv apa102-pi gpiozero`
 
 5. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`

@@ -34,8 +34,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # Instantiate the Anthropics API
 anthropic_client = anthropic.Anthropic(
-        # defaults to os.environ.get("ANTHROPIC_API_KEY")
-    api_key="my_api_key",
+    api_key=os.environ.get("ANTHROPIC_API_KEY"),
 )
 
 # We add 1 second silence globally due to initial buffering how pydub handles audio in memory
