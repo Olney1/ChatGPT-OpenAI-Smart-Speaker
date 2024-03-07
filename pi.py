@@ -226,17 +226,19 @@ def main():
                 print(f"This is the prompt being sent to Anthropic: {prompt}")
                 response = anthropic_response(prompt)
                 if response:
-                    """
-                    # This is how we extract the content from OpenAI's response. This only works with their model only.
-                    message = response.choices[0].message.content"""
-                    # This is how we extract the content from Anthropic's response. This works with their model only.
-                    message = response.content
+                    content_blocks = response.content
+                    if content_blocks and isinstance(content_blocks, list):
+                        content_block = content_blocks[0]
+                        if isinstance(content_block, anthropic.ContentBlock):
+                            message = content_block.text
+                        else:
+                            message = str(content_block)
+                    else:
+                        message = str(content_blocks)
+    
                     print(message)
                     generate_audio_file(message)
                     play_response()
-                    pixels.off()
-                else:
-                    print("No prompt to send to OpenAI")
                     pixels.off()
             else:
                 print("Speech was not recognised or there was an error.")
