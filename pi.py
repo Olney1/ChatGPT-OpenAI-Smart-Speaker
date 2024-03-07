@@ -229,7 +229,7 @@ def main():
                 print(f"This is the prompt being sent to Anthropic: {prompt}")
                 response = anthropic_response(prompt)
                 if response:
-                    message = response
+                    message = response.content
                     print(message)
                     generate_audio_file(message)
                     play_response()
