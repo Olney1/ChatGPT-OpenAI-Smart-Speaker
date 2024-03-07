@@ -223,10 +223,14 @@ def main():
             pixels.listen()  # Indicate that the speaker is listening
             prompt = recognise_speech()
             if prompt:
-                print(f"This is the prompt being sent to OpenAI: {prompt}")
+                print(f"This is the prompt being sent to Anthropic: {prompt}")
                 response = anthropic_response(prompt)
                 if response:
-                    message = response.choices[0].message.content
+                    """
+                    # This is how we extract the content from OpenAI's response. This only works with their model only.
+                    message = response.choices[0].message.content"""
+                    # This is how we extract the content from Anthropic's response of the assistant's message. This works with their model only.
+                    message = response.messages[1].content
                     print(message)
                     generate_audio_file(message)
                     play_response()
