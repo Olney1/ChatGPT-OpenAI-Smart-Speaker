@@ -1,5 +1,6 @@
 import os
 from openai import OpenAI
+import anthropic
 import pyaudio
 import speech_recognition as sr
 from gtts import gTTS
@@ -25,8 +26,17 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 # This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
+# Load environment variables
 load_dotenv()
+
+# Instantiate the OpenAI API
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+# Instantiate the Anthropics API
+anthropic_client = anthropic.Anthropic(
+        # defaults to os.environ.get("ANTHROPIC_API_KEY")
+    api_key="my_api_key",
+)
 
 # We add 1 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=1000)
@@ -151,22 +161,32 @@ def recognise_speech():
             print(f"Could not request results from Google Speech Recognition service; {e}")
     return None
 
-def chatgpt_response(prompt):
+def anthropic_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
     if prompt is not None:
         # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
         silence = AudioSegment.silent(duration=1000) 
         holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
         play(holding_audio_response)
-        # send the converted audio text to chatgpt
-        response = client.chat.completions.create(
-            model=model_engine,
-            messages=[{"role": "system", "content": pre_prompt},
-                      {"role": "user", "content": prompt}],
-            max_tokens=400,
-            n=1,
-            temperature=0.7,
+    
+        response = anthropic_client.messages.create(
+        model="claude-3-opus-20240229",
+        max_tokens=400,
+        temperature=0.5,
+        system=pre_prompt,
+        messages=[
+            {"role": "user", "content": prompt}
+            ]
         )
+        """ # send the converted audio text to chatgpt
+         response = client.chat.completions.create(
+             model=model_engine,
+             messages=[{"role": "system", "content": pre_prompt},
+                       {"role": "user", "content": prompt}],
+             max_tokens=400,
+             n=1,
+             temperature=0.7,
+         )"""
         # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
         checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
         play(checking_on_that)
@@ -205,7 +225,7 @@ def main():
             prompt = recognise_speech()
             if prompt:
                 print(f"This is the prompt being sent to OpenAI: {prompt}")
-                response = chatgpt_response(prompt)
+                response = anthropic_response(prompt)
                 if response:
                     message = response.choices[0].message.content
                     print(message)
