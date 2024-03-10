@@ -155,8 +155,8 @@ def recognise_speech():
 
     # Use OpenAI's Whisper model for speech recognition
     try:
-        response = openai.Audio.transcribe(
-            model="whisper-english",
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
             file=io.BytesIO(b''.join(frames)),
             content_type="audio/l16; rate=16000; channels=1"
         )
