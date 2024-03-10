@@ -19,6 +19,7 @@ import time
 import pvporcupine
 import struct
 from vosk import Model, KaldiRecognizer
+import json
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
