@@ -18,9 +18,8 @@ from pydub.playback import play
 import time
 import pvporcupine
 import struct
-import wave
-import io
 import tempfile
+import soundfile as sf
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -138,80 +137,59 @@ def detect_wake_word():
     return False
 
 def recognise_speech():
-    # Set up the audio recording parameters
-    CHUNK = 1024
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 1
-    RATE = 44100
-    RECORD_SECONDS = 5
-
-    # Create a PyAudio object and open the microphone stream
-    p = pyaudio.PyAudio()
-    stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+    stream.start_stream()
 
     print("Listening for your question...")
 
+    # Record a short segment of audio
     frames = []
-    for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
+    for _ in range(0, int(16000 / 8192 * 5)):  # Record for 5 seconds
+        data = stream.read(8192)
         frames.append(data)
 
-    print("Finished recording.")
-
-    # Stop and close the stream and PyAudio object
     stream.stop_stream()
     stream.close()
-    p.terminate()
+    mic.terminate()
 
-    # Save the recorded audio as a temporary WAV file
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
-        wf = wave.open(temp_audio_file, 'wb')
-        wf.setnchannels(CHANNELS)
-        wf.setsampwidth(p.get_sample_size(FORMAT))
-        wf.setframerate(RATE)
-        wf.writeframes(b''.join(frames))
-        wf.close()
-        temp_audio_file.flush()  # Ensure the file is written to disk
+    # Save the recorded audio to a temporary file
+    temp_file = tempfile.mktemp(suffix='.wav')
+    sf.write(temp_file, b''.join(frames), 16000)
 
-        # Use OpenAI's Whisper API for speech recognition
-        with open(temp_audio_file.name, 'rb') as audio_file:
-            transcript = Audio.transcribe("whisper-1", audio_file)
-            speech_text = transcript["text"].strip()
-
-    # Delete the temporary audio file
-    os.unlink(temp_audio_file.name)
-
-    if speech_text:
-        print("OpenAI thinks you said:", speech_text)
-        return speech_text
-    else:
-        print("Empty speech detected.")
+    # Use OpenAI's Whisper model for speech recognition
+    try:
+        response = openai.Audio.transcribe(
+            model="whisper-english",
+            file=open(temp_file, "rb")
+        )
+        transcript = response['text']
+        print(f"Transcript: {transcript}")
+        return transcript
+    except Exception as e:
+        print(f"An error occurred during transcription: {e}")
         return None
 
-def chatgpt_response():
-    # Record audio and get the speech text using recognise_speech()
-    speech_text = recognise_speech()
 
-    if speech_text:
-        # Add a holding message like the one below to deal with current TTS delays
-        silence = AudioSegment.silent(duration=1000)
+def chatgpt_response(prompt):
+    # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
+    if prompt is not None:
+        # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
+        silence = AudioSegment.silent(duration=1000) 
         holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
         play(holding_audio_response)
-
-        # Send the speech text to ChatGPT for text generation
+        # send the converted audio text to chatgpt
         response = client.chat.completions.create(
             model=model_engine,
             messages=[{"role": "system", "content": pre_prompt},
-                      {"role": "user", "content": speech_text}],
+                      {"role": "user", "content": prompt}],
             max_tokens=400,
             n=1,
             temperature=0.7,
         )
-
-        # Play a checking message while waiting for the response
+        # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
         checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
         play(checking_on_that)
-
         return response
     else:
         return None
