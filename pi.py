@@ -28,8 +28,8 @@ pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond wit
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# We add 1 second silence globally due to initial buffering how pydub handles audio in memory
-silence = AudioSegment.silent(duration=1000)
+# We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
+silence = AudioSegment.silent(duration=500)
 
 # We set the OpenAI model and language settings here
 model_engine = "gpt-4-0125-preview"
@@ -155,7 +155,6 @@ def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
     if prompt is not None:
         # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
-        silence = AudioSegment.silent(duration=1000) 
         holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
         play(holding_audio_response)
         # send the converted audio text to chatgpt
