@@ -19,7 +19,7 @@ import time
 import pvporcupine
 import struct
 import tempfile
-import soundfile as sf
+import io
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -153,15 +153,12 @@ def recognise_speech():
     stream.close()
     mic.terminate()
 
-    # Save the recorded audio to a temporary file
-    temp_file = tempfile.mktemp(suffix='.wav')
-    sf.write(temp_file, b''.join(frames), 16000)
-
     # Use OpenAI's Whisper model for speech recognition
     try:
         response = openai.Audio.transcribe(
             model="whisper-english",
-            file=open(temp_file, "rb")
+            file=io.BytesIO(b''.join(frames)),
+            content_type="audio/l16; rate=16000; channels=1"
         )
         transcript = response['text']
         print(f"Transcript: {transcript}")
@@ -169,7 +166,6 @@ def recognise_speech():
     except Exception as e:
         print(f"An error occurred during transcription: {e}")
         return None
-
 
 def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
