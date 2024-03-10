@@ -151,12 +151,17 @@ def recognise_speech():
         if len(data) == 0:
             break
         if recognizer.AcceptWaveform(data):
-            speech_text = recognizer.FinalResult()
-            print("Vosk thinks you said: " + speech_text)
-            stream.stop_stream()
-            stream.close()
-            mic.terminate()
-            return speech_text
+            result = recognizer.Result()
+            result_dict = json.loads(result)
+            speech_text = result_dict.get('text', '').strip()
+            if speech_text:
+                print("Vosk thinks you said:", result)
+                stream.stop_stream()
+                stream.close()
+                mic.terminate()
+                return speech_text
+            else:
+                print("Empty speech detected.")
 
     stream.stop_stream()
     stream.close()
