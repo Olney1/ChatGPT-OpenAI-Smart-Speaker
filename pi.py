@@ -19,6 +19,7 @@ import time
 import pvporcupine
 import struct
 from vosk import Model, KaldiRecognizer
+import json
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -152,8 +153,12 @@ def recognise_speech():
             break
         if recognizer.AcceptWaveform(data):
             result = recognizer.Result()
-            speech_text = result['text']
+            result_dict = json.loads(result)  # Parse the result as JSON
+            speech_text = result_dict['text']  # Access the 'text' key from the parsed dictionary
             print("Vosk thinks you said: " + speech_text)
+            stream.stop_stream()
+            stream.close()
+            mic.terminate()
             return speech_text
 
     stream.stop_stream()
