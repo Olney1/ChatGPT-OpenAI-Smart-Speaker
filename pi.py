@@ -151,8 +151,7 @@ def recognise_speech():
         if len(data) == 0:
             break
         if recognizer.AcceptWaveform(data):
-            result = recognizer.Result()
-            speech_text = result['text']  # Access the 'text' key from the result dictionary
+            speech_text = recognizer.FinalResult()
             print("Vosk thinks you said: " + speech_text)
             stream.stop_stream()
             stream.close()
