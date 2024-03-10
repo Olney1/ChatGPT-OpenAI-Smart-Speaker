@@ -146,7 +146,7 @@ def recognise_speech():
     model_path = os.path.join(os.path.dirname(__file__), 'speech_recognition', 'leopard', 'jeffers.pv')
 
     # Initialize Leopard with the downloaded model
-    leopard = pvleopard.create(model_path=model_path)
+    leopard = pvleopard.create(access_key=os.environ.get("ACCESS_KEY"), model_path=model_path)
 
     try:
         # Record a short segment of audio
