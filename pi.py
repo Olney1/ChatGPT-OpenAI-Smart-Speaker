@@ -15,10 +15,10 @@ from alexa_led_pattern import AlexaLedPattern
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
-import time
 import pvporcupine
 import struct
-import tempfile
+import pvleopard
+
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -142,37 +142,48 @@ def recognise_speech():
 
     print("Listening for your question...")
 
-    # Record a short segment of audio
-    frames = []
-    for _ in range(0, int(16000 / 8192 * 5)):  # Record for 5 seconds
-        data = stream.read(8192)
-        frames.append(data)
+    # Path to the downloaded Leopard model file
+    model_path = os.path.join(os.path.dirname(__file__), 'speech_recognition', 'leopard', 'jeffers.pv')
 
-    stream.stop_stream()
-    stream.close()
-    mic.terminate()
+    # Initialize Leopard with the downloaded model
+    leopard = pvleopard.create(model_path=model_path)
 
-    # Save the recorded audio to a temporary file
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_file:
-        temp_file.write(b''.join(frames))
-        temp_file_path = temp_file.name
-
-    # Use OpenAI's Whisper model for speech recognition
     try:
-        with open(temp_file_path, "rb") as audio_file:
-            transcription = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=audio_file
-            )
-        transcript = transcription.text
+        # Record a short segment of audio
+        frames = []
+        for _ in range(0, int(16000 / 8192 * 5)):  # Record for 5 seconds
+            data = stream.read(8192)
+            frames.append(data)
+
+        stream.stop_stream()
+        stream.close()
+        mic.terminate()
+
+        # Perform speech recognition using Leopard
+        transcript, words = leopard.process(b''.join(frames))
         print(f"Transcript: {transcript}")
         return transcript
+
+    except pvleopard.LeopardInvalidArgumentError as e:
+        print(f"Leopard invalid argument: {e}")
+    except pvleopard.LeopardActivationError as e:
+        print(f"Leopard activation error: {e}")
+    except pvleopard.LeopardActivationLimitError as e:
+        print(f"Leopard activation limit reached: {e}")
+    except pvleopard.LeopardActivationRefusedError as e:
+        print(f"Leopard activation refused: {e}")
+    except pvleopard.LeopardActivationThrottledError as e:
+        print(f"Leopard activation throttled: {e}")
+    except pvleopard.LeopardError as e:
+        print(f"Leopard error: {e}")
     except Exception as e:
         print(f"An error occurred during transcription: {e}")
-        return None
+
     finally:
-        # Remove the temporary file
-        os.unlink(temp_file_path)
+        if leopard is not None:
+            leopard.delete()
+
+    return None
 
 def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
