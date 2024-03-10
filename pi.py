@@ -20,6 +20,7 @@ import pvporcupine
 import struct
 import wave
 import io
+import tempfile
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -162,21 +163,23 @@ def recognise_speech():
     stream.close()
     p.terminate()
 
-    # Save the recorded audio as a WAV file in memory
-    wav_file = io.BytesIO()
-    wf = wave.open(wav_file, 'wb')
-    wf.setnchannels(CHANNELS)
-    wf.setsampwidth(p.get_sample_size(FORMAT))
-    wf.setframerate(RATE)
-    wf.writeframes(b''.join(frames))
-    wf.close()
+    # Save the recorded audio as a temporary WAV file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
+        wf = wave.open(temp_audio_file, 'wb')
+        wf.setnchannels(CHANNELS)
+        wf.setsampwidth(p.get_sample_size(FORMAT))
+        wf.setframerate(RATE)
+        wf.writeframes(b''.join(frames))
+        wf.close()
+        temp_audio_file.flush()  # Ensure the file is written to disk
 
-    # Reset the file pointer to the beginning of the WAV file
-    wav_file.seek(0)
+        # Use OpenAI's Whisper API for speech recognition
+        with open(temp_audio_file.name, 'rb') as audio_file:
+            transcript = Audio.transcribe("whisper-1", audio_file)
+            speech_text = transcript["text"].strip()
 
-    # Use OpenAI's Whisper API for speech recognition
-    transcript = openai.Audio.transcribe("whisper-1", wav_file)
-    speech_text = transcript["text"].strip()
+    # Delete the temporary audio file
+    os.unlink(temp_audio_file.name)
 
     if speech_text:
         print("OpenAI thinks you said:", speech_text)
