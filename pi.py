@@ -18,6 +18,7 @@ from pydub.playback import play
 import time
 import pvporcupine
 import struct
+from vosk import Model, KaldiRecognizer
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -135,20 +136,29 @@ def detect_wake_word():
     return False
 
 def recognise_speech():
-    # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening for your question...")
-        audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
-        print("Processing your question...")
-        try:
-            speech_text = r.recognize_google(audio_stream)
-            print("Google Speech Recognition thinks you said: " + speech_text)
+    model_path = "speech_recognition_models/vosk"
+    model = Model(model_path)
+    recognizer = KaldiRecognizer(model, 16000)
+
+    mic = pyaudio.PyAudio()
+    stream = mic.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+    stream.start_stream()
+
+    print("Listening for your question...")
+
+    while True:
+        data = stream.read(4096)
+        if len(data) == 0:
+            break
+        if recognizer.AcceptWaveform(data):
+            result = recognizer.Result()
+            speech_text = result['text']
+            print("Vosk thinks you said: " + speech_text)
             return speech_text
-        except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print(f"Could not request results from Google Speech Recognition service; {e}")
+
+    stream.stop_stream()
+    stream.close()
+    mic.terminate()
     return None
 
 def chatgpt_response(prompt):
