@@ -154,22 +154,32 @@ def recognise_speech():
 def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
     if prompt is not None:
-        # Add a holding messsage like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
-        holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
-        play(holding_audio_response)
-        # send the converted audio text to chatgpt
-        response = client.chat.completions.create(
-            model=model_engine,
-            messages=[{"role": "system", "content": pre_prompt},
-                      {"role": "user", "content": prompt}],
-            max_tokens=400,
-            n=1,
-            temperature=0.7,
-        )
-        # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
-        checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
-        play(checking_on_that)
-        return response
+        try:
+            # Add a holding message like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
+            silence = AudioSegment.silent(duration=1000)
+            holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
+            play(holding_audio_response)
+
+            # send the converted audio text to chatgpt
+            response = client.chat.completions.create(
+                model=model_engine,
+                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt}],
+                max_tokens=400,
+                n=1,
+                temperature=0.7,
+            )
+
+            # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
+            checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
+            play(checking_on_that)
+
+            return response
+        except Exception as e:
+            # If there is an error, we can play a message to the user to indicate that there was an issue with the API call.
+            print(f"An API error occurred: {str(e)}")
+            error_message = silence + AudioSegment.from_mp3("sounds/openai_issue.mp3")
+            play(error_message)
+            return None
     else:
         return None
  
