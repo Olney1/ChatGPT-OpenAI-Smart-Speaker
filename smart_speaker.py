@@ -90,7 +90,7 @@ pixels = Pixels()
  
  
 # settings and keys
-model_engine = "gpt-4-0125-preview"
+model_engine = "gpt-4o"
 language = 'en'
  
 def recognise_speech():

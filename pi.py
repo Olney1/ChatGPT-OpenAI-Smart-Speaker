@@ -32,7 +32,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 silence = AudioSegment.silent(duration=500)
 
 # We set the OpenAI model and language settings here
-model_engine = "gpt-4-0125-preview"
+model_engine = "gpt-4o"
 language = 'en'
 
 class Pixels:

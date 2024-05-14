@@ -13,7 +13,7 @@ load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # settings and keys
-model_engine = "gpt-4-0125-preview"
+model_engine = "gpt-4o"
 language = 'en'
 
 def recognize_speech():
