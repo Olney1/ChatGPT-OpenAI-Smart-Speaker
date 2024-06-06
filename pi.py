@@ -18,7 +18,7 @@ from pydub.playback import play
 import time
 import pvporcupine
 import struct
-from picamera import PiCamera
+from picamera import PiCamera, PiCameraError
 import base64
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
@@ -156,17 +156,22 @@ def recognise_speech():
                 print("Getting ready to capture an image...")
                 time.sleep(1) # Add a delay to allow the user to prepare
                 play(take_photo)
-                camera = PiCamera()
-                camera.resolution = (640, 480)
-                camera.start_preview()
-                time.sleep(2)  # Give the camera time to adjust
-                image_path = "captured_image.jpg"
-                camera.capture(image_path)
-                camera.stop_preview()
-                camera.close()
-                print("Photo captured and saved as captured_image.jpg")
-                play(camera_shutter)
-                return speech_text, image_path
+                
+                try:
+                    camera = PiCamera()
+                    camera.resolution = (640, 480)
+                    camera.start_preview()
+                    time.sleep(2)  # Give the camera time to adjust
+                    image_path = "captured_image.jpg"
+                    camera.capture(image_path)
+                    camera.stop_preview()
+                    camera.close()
+                    print("Photo captured and saved as captured_image.jpg")
+                    play(camera_shutter)
+                    return speech_text, image_path
+                except PiCameraError:
+                    print("Pi camera not detected. Proceeding without capturing an image.")
+                    return speech_text, None
             
             return speech_text, None
         except sr.UnknownValueError:
