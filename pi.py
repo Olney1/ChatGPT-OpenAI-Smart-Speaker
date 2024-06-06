@@ -18,6 +18,7 @@ from pydub.playback import play
 import time
 import pvporcupine
 import struct
+from picamera import PiCamera
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -136,6 +137,9 @@ def detect_wake_word():
 
 def recognise_speech():
     # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
+    start_camera = silence + AudioSegment.from_mp3("sounds/start_camera.mp3")
+    take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
+    camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening for your question...")
@@ -144,12 +148,31 @@ def recognise_speech():
         try:
             speech_text = r.recognize_google(audio_stream)
             print("Google Speech Recognition thinks you said: " + speech_text)
-            return speech_text
+            
+            if "on the camera" in speech_text.lower():
+                print("Phrase 'on the camera' detected.")
+                play(start_camera)
+                print("Getting ready to capture an image...")
+                time.sleep(1) # Add a delay to allow the user to prepare
+                play(take_photo)
+                camera = PiCamera()
+                camera.resolution = (640, 480)
+                camera.start_preview()
+                time.sleep(2)  # Give the camera time to adjust
+                image_path = "captured_image.jpg"
+                camera.capture(image_path)
+                camera.stop_preview()
+                camera.close()
+                print("Photo captured and saved as captured_image.jpg")
+                play(camera_shutter)
+                return speech_text, image_path
+            
+            return speech_text, None
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
             print(f"Could not request results from Google Speech Recognition service; {e}")
-    return None
+    return None, None
 
 def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
@@ -173,6 +196,42 @@ def chatgpt_response(prompt):
             checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
             play(checking_on_that)
 
+            return response
+        except Exception as e:
+            # If there is an error, we can play a message to the user to indicate that there was an issue with the API call.
+            print(f"An API error occurred: {str(e)}")
+            error_message = silence + AudioSegment.from_mp3("sounds/openai_issue.mp3")
+            play(error_message)
+            return None
+    else:
+        return None
+
+def chatgpt_response_with_image(prompt, image_path):
+    if prompt is not None:
+        try:
+            # Add a holding message like the one below to deal with current TTS delays until such time that TTS can be streamed due to initial buffering how pydub handles audio in memory
+            silence = AudioSegment.silent(duration=1000)
+            holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
+            play(holding_audio_response)
+            
+            # Send the converted audio text and image to ChatGPT
+            with open(image_path, "rb") as image_file:
+                response = client.chat.completions.create(
+                    model=model_engine,
+                    messages=[
+                        {"role": "system", "content": pre_prompt},
+                        {"role": "user", "content": prompt},
+                        {"role": "user", "content": image_file}
+                    ],
+                    max_tokens=400,
+                    n=1,
+                    temperature=0.7,
+                )
+            
+            # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
+            checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
+            play(checking_on_that)
+            
             return response
         except Exception as e:
             # If there is an error, we can play a message to the user to indicate that there was an issue with the API call.
@@ -211,10 +270,13 @@ def main():
         print("Waiting for wake word...")
         if detect_wake_word():
             pixels.listen()  # Indicate that the speaker is listening
-            prompt = recognise_speech()
+            prompt, image_path = recognise_speech()
             if prompt:
                 print(f"This is the prompt being sent to OpenAI: {prompt}")
-                response = chatgpt_response(prompt)
+                if image_path:
+                    response = chatgpt_response_with_image(prompt, image_path)
+                else:
+                    response = chatgpt_response(prompt)
                 if response:
                     message = response.choices[0].message.content
                     print(message)
