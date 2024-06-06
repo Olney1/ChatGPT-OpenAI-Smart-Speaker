@@ -103,7 +103,7 @@ def create_picture_message():
 
 def start_picture_message():
 
-    message = "Hold steady....... I'm taking a photo now...... in ....... 3.............. 2.............. 1............!"
+    message = "Hold steady....... I'm taking a photo now...... in ....... 3 ...... 2 ......... 1"
 
     response = client.audio.speech.create(
         model="tts-1",
@@ -113,4 +113,4 @@ def start_picture_message():
 
     response.stream_to_file("sounds/take_photo.mp3")
 
-create_picture_message()
+start_picture_message()
