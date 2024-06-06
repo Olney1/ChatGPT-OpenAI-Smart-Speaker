@@ -87,4 +87,30 @@ def create_picovoice_issue():
 
     response.stream_to_file("sounds/picovoice_issue.mp3")
 
-create_picovoice_issue()
+
+def create_picture_message():
+
+    message = "Let me take a look through the camera."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/start_camera.mp3")
+
+
+def start_picture_message():
+
+    message = "Hold steady....... I'm taking a photo now...... in ....... 3 ...... 2 ......... 1"
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/take_photo.mp3")
+
+start_picture_message()
