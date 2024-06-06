@@ -159,6 +159,7 @@ def recognise_speech():
                 
                 try:
                     camera = PiCamera()
+                    camera.rotation = 180  # Rotate the camera image by 180 degrees - PLEASE REMOVE THIS LINE IF YOUR CAMERA IS ROTATED DIFFERENTLY
                     camera.resolution = (640, 480)
                     camera.start_preview()
                     time.sleep(2)  # Give the camera time to adjust
