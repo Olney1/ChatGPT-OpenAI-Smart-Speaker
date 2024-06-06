@@ -19,6 +19,7 @@ import time
 import pvporcupine
 import struct
 from picamera import PiCamera
+import base64
 
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
@@ -206,6 +207,10 @@ def chatgpt_response(prompt):
     else:
         return None
 
+def encode_image(image_path):
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode('utf-8')
+
 def chatgpt_response_with_image(prompt, image_path):
     if prompt is not None:
         try:
@@ -214,19 +219,34 @@ def chatgpt_response_with_image(prompt, image_path):
             holding_audio_response = silence + AudioSegment.from_mp3("sounds/holding.mp3")
             play(holding_audio_response)
             
+            # Encode the image as base64
+            base64_image = encode_image(image_path)
+            
             # Send the converted audio text and image to ChatGPT
-            with open(image_path, "rb") as image_file:
-                response = client.chat.completions.create(
-                    model=model_engine,
-                    messages=[
-                        {"role": "system", "content": pre_prompt},
-                        {"role": "user", "content": prompt},
-                        {"role": "user", "content": image_file}
-                    ],
-                    max_tokens=400,
-                    n=1,
-                    temperature=0.7,
-                )
+            response = client.chat.completions.create(
+                model=model_engine,
+                messages=[
+                    {"role": "system", "content": pre_prompt},
+                    {
+                        "role": "user",
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": prompt
+                            },
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{base64_image}"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                max_tokens=400,
+                n=1,
+                temperature=0.7,
+            )
             
             # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
             checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
