@@ -137,11 +137,11 @@ def detect_wake_word():
 
 def recognise_speech():
     # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
-    start_camera = silence + AudioSegment.from_mp3("sounds/start_camera.mp3")
-    take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
-    camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
     r = sr.Recognizer()
     with sr.Microphone() as source:
+        start_camera = silence + AudioSegment.from_mp3("sounds/start_camera.mp3")
+        take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
+        camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
         print("Listening for your question...")
         audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
         print("Processing your question...")
