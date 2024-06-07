@@ -150,13 +150,11 @@ def recognise_speech():
             speech_text = r.recognize_google(audio_stream)
             print("Google Speech Recognition thinks you said: " + speech_text)
             
-            if "on the camera" in speech_text.lower():
+            if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
                 print("Phrase 'on the camera' detected.")
                 play(start_camera)
                 print("Getting ready to capture an image...")
-                time.sleep(1) # Add a delay to allow the user to prepare
                 play(take_photo)
-                
                 try:
                     camera = PiCamera()
                     camera.rotation = 180  # Rotate the camera image by 180 degrees - PLEASE REMOVE THIS LINE IF YOUR CAMERA IS ROTATED DIFFERENTLY
@@ -165,10 +163,10 @@ def recognise_speech():
                     time.sleep(2)  # Give the camera time to adjust
                     image_path = "captured_image.jpg"
                     camera.capture(image_path)
+                    play(camera_shutter)
                     camera.stop_preview()
                     camera.close()
                     print("Photo captured and saved as captured_image.jpg")
-                    play(camera_shutter)
                     return speech_text, image_path
                 except PiCameraError:
                     print("Pi camera not detected. Proceeding without capturing an image.")
