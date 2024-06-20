@@ -23,7 +23,7 @@ from picamera import PiCamera, PiCameraError
 import base64
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.agents import AgentType, initialize_agent
-from langchain.chat_models import OpenAI
+from langchain_community.chat_models import OpenAI
 from langchain.schema import SystemMessage
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
