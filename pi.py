@@ -177,9 +177,9 @@ def recognise_speech():
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
                 agent = initialize_search_agent()
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
+                play(agent_search)
                 response = agent.run(speech_text)
                 print("Agent response:", response)
-                play(agent_search)
                 return speech_text, None
             
             if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
