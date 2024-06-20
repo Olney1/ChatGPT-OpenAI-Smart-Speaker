@@ -113,4 +113,17 @@ def start_picture_message():
 
     response.stream_to_file("sounds/take_photo.mp3")
 
-start_picture_message()
+
+def agent_search():
+
+    message = "Let me do a quick search for you."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/agent.mp3")
+
+agent_search()

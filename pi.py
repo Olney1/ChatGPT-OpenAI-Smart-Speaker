@@ -20,7 +20,10 @@ import pvporcupine
 import struct
 from picamera import PiCamera, PiCameraError
 import base64
-
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain.agents import AgentType, initialize_agent
+from langchain.chat_models import OpenAI
+from langchain.schema import SystemMessage
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
@@ -29,6 +32,7 @@ pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond wit
 
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
 
 # We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=500)
@@ -36,6 +40,9 @@ silence = AudioSegment.silent(duration=500)
 # We set the OpenAI model and language settings here
 model_engine = "gpt-4o"
 language = 'en'
+
+# Load the Tavily Search tool
+tool = TavilySearchResults()
 
 class Pixels:
     PIXELS_N = 12
@@ -136,6 +143,21 @@ def detect_wake_word():
             porcupine.delete()
     return False
 
+def initialize_search_agent():
+    llm = OpenAI(temperature=0)
+    search = TavilySearchResults()
+    system_message = SystemMessage(
+        content="You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events."
+    )
+    agent = initialize_agent(
+        [search],
+        llm,
+        agent=AgentType.OPENAI_FUNCTIONS,
+        verbose=True,
+        agent_kwargs={"system_message": system_message},
+    )
+    return agent
+
 def recognise_speech():
     # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
     r = sr.Recognizer()
@@ -143,12 +165,21 @@ def recognise_speech():
         start_camera = silence + AudioSegment.from_mp3("sounds/start_camera.mp3")
         take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
         camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
+        agent_search = silence + AudioSegment.from_mp3("sounds/agent.mp3")
         print("Listening for your question...")
         audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
         print("Processing your question...")
         try:
             speech_text = r.recognize_google(audio_stream)
             print("Google Speech Recognition thinks you said: " + speech_text)
+
+            if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
+                agent = initialize_search_agent()
+                print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
+                response = agent.run(speech_text)
+                print("Agent response:", response)
+                play(agent_search)
+                return speech_text, None
             
             if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
                 print("Phrase 'on the camera' detected.")
