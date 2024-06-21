@@ -168,7 +168,7 @@ def recognise_speech():
         camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
         agent_search = silence + AudioSegment.from_mp3("sounds/agent.mp3")
         print("Listening for your question...")
-        audio_stream = r.listen(source, timeout=5, phrase_time_limit=15)
+        audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
         print("Processing your question...")
         try:
             speech_text = r.recognize_google(audio_stream)
