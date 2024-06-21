@@ -122,14 +122,19 @@ def detect_wake_word():
         except pvporcupine.PorcupineInvalidArgumentError as e:
             print(f"Error creating Porcupine instance: {e}")
             # Handle the error here
-        pa = pyaudio.PyAudio()
-        audio_stream = pa.open(
-        rate=porcupine.sample_rate,
-        channels=1,
-        format=pyaudio.paInt16,
-        input=True,
-        input_device_index=2,
-        frames_per_buffer=porcupine.frame_length)
+        try:
+            pa = pyaudio.PyAudio()
+            audio_stream = pa.open(
+            rate=porcupine.sample_rate,
+            channels=1,
+            format=pyaudio.paInt16,
+            input=True,
+            input_device_index=2,
+            frames_per_buffer=porcupine.frame_length)
+        except:
+            print("Error with audio stream setup.")
+            error_response = silence + AudioSegment.from_mp3("sounds/audio_issue.mp3")
+            play(error_response)
 
         while True:
             pcm = audio_stream.read(porcupine.frame_length)

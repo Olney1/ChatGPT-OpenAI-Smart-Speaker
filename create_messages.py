@@ -126,4 +126,16 @@ def agent_search():
 
     response.stream_to_file("sounds/agent.mp3")
 
-agent_search()
+def audio_issue():
+
+    message = "There was an issue opening the PyAudio stream on the device."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/audio_issue.mp3")
+
+audio_issue()
