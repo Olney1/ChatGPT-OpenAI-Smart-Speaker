@@ -129,6 +129,7 @@ def detect_wake_word():
             channels=1,
             format=pyaudio.paInt16,
             input=True,
+            input_device_index=pa.get_default_input_device_info()["index"],
             frames_per_buffer=porcupine.frame_length)
         except:
             print("Error with audio stream setup.")
