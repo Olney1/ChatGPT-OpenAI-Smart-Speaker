@@ -111,16 +111,24 @@ def detect_wake_word():
     try:
         # Path to the custom wake word .ppn file
         custom_wake_word_path = os.path.join(os.path.dirname(__file__), 'wake_words', 'custom_model/Jeffers_Pi.ppn')
+        print(f"Wake word file path: {custom_wake_word_path}")
+        if not os.path.exists(custom_wake_word_path):
+            print(f"Error: Wake word file not found at {custom_wake_word_path}")
         
         # Initialize Porcupine with the custom wake word
-        porcupine = pvporcupine.create(access_key=os.environ.get("ACCESS_KEY"), keyword_paths=[custom_wake_word_path]) # You will need to obtain an access key from Picovoice to use Porcupine (https://console.picovoice.ai/). You can also create your own custom wake word model using the Picovoice Console.
+        # You will need to obtain an access key from Picovoice to use Porcupine (https://console.picovoice.ai/). You can also create your own custom wake word model using the Picovoice Console.
+        try:
+            porcupine = pvporcupine.create(access_key=os.environ.get("ACCESS_KEY"), keyword_paths=[custom_wake_word_path])
+        except pvporcupine.PorcupineInvalidArgumentError as e:
+            print(f"Error creating Porcupine instance: {e}")
+            # Handle the error here
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
         rate=porcupine.sample_rate,
         channels=1,
         format=pyaudio.paInt16,
         input=True,
-        input_device_index=2,  # Use card 2 for input
+        input_device_index=2,
         frames_per_buffer=porcupine.frame_length)
 
         while True:
