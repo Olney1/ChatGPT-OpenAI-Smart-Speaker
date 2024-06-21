@@ -116,11 +116,12 @@ def detect_wake_word():
         porcupine = pvporcupine.create(access_key=os.environ.get("ACCESS_KEY"), keyword_paths=[custom_wake_word_path]) # You will need to obtain an access key from Picovoice to use Porcupine (https://console.picovoice.ai/). You can also create your own custom wake word model using the Picovoice Console.
         pa = pyaudio.PyAudio()
         audio_stream = pa.open(
-            rate=porcupine.sample_rate,
-            channels=1,
-            format=pyaudio.paInt16,
-            input=True,
-            frames_per_buffer=porcupine.frame_length)
+        rate=porcupine.sample_rate,
+        channels=1,
+        format=pyaudio.paInt16,
+        input=True,
+        input_device_index=2,  # Use card 2 for input
+        frames_per_buffer=porcupine.frame_length)
 
         while True:
             pcm = audio_stream.read(porcupine.frame_length)
