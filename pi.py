@@ -129,7 +129,6 @@ def detect_wake_word():
             channels=1,
             format=pyaudio.paInt16,
             input=True,
-            input_device_index=2,
             frames_per_buffer=porcupine.frame_length)
         except:
             print("Error with audio stream setup.")
@@ -140,7 +139,6 @@ def detect_wake_word():
             pcm = audio_stream.read(porcupine.frame_length)
             pcm = struct.unpack_from("h" * porcupine.frame_length, pcm)
             result = porcupine.process(pcm)
-
             if result >= 0:
                 print("Wake word detected")
                 return True
@@ -149,6 +147,7 @@ def detect_wake_word():
         print("Error with wake word detection, Porcupine or the PicoVoice Service.")
         error_response = silence + AudioSegment.from_mp3("sounds/picovoice_issue.mp3")
         play(error_response)
+
     finally:
         if audio_stream is not None:
             audio_stream.close()
