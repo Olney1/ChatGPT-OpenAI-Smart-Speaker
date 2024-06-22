@@ -177,7 +177,7 @@ def search_agent(speech_text):
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. The current date is {today} and the user wants to know {speech_text}."
+        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today} and the user wants to know {speech_text}."
     )
     prompt = initialize_agent(
         [search],
