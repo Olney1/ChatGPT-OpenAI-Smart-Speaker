@@ -204,6 +204,7 @@ def recognise_speech():
             speech_text = r.recognize_google(audio_stream)
             print("Google Speech Recognition thinks you said: " + speech_text)
 
+            # 1. Agent search route
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
@@ -211,8 +212,9 @@ def recognise_speech():
                 agent_response = agent.run(speech_text)
                 print("Agent response:", agent_response)
                 # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
-                return agent_response
+                return agent_response, None, None
             
+            # 2. Image capture route
             if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
                 print("Phrase 'on the camera' detected.")
                 play(start_camera)
@@ -230,18 +232,20 @@ def recognise_speech():
                     camera.stop_preview()
                     camera.close()
                     print("Photo captured and saved as captured_image.jpg")
-                    return speech_text, image_path
+                    return None, image_path, speech_text
                 
                 except PiCameraError:
                     print("Pi camera not detected. Proceeding without capturing an image.")
-                    return speech_text, None
-            return speech_text, None, 
+                    return None, None, speech_text
+                
+            # 3. General speech route - no agent or image capture
+            return None, None, speech_text
         
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
             print(f"Could not request results from Google Speech Recognition service; {e}")
-    return None, None
+    return None, None, None
 
 # This route is called to send the user's general question to OpenAI's ChatGPT model and then play the response to the user.
 def chatgpt_response(prompt):
