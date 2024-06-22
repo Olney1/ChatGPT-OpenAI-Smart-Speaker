@@ -17,7 +17,7 @@ except ImportError:
 from alexa_led_pattern import AlexaLedPattern
 from pathlib import Path
 from pydub import AudioSegment
-from pydub.playback import play
+from pydub.playback import play as pydub_play
 import time
 import pvporcupine
 import struct
@@ -106,46 +106,8 @@ pixels = Pixels()
 
 ############################### TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
-p = pyaudio.PyAudio()
-default_output = p.get_default_output_device_info()
-print(f"Default output device: {default_output['name']}")
-
-# Set the default output device to your USB audio device
-pyaudio.PyAudio().terminate()
-pyaudio.PyAudio = lambda: pyaudio.PyAudio().open(
-    output_device_index=1  # This should be the index of your USB audio device
-)
-
-p = pyaudio.PyAudio()
-default_output = p.get_default_output_device_info()
-print(f"Default output device: {default_output['name']}")
-p.terminate()
-
-def get_system_volume():
-    try:
-        output = subprocess.check_output(['amixer', 'sget', 'PCM'], universal_newlines=True)
-        volume = output.split('[')[1].split('%')[0]
-        return int(volume)
-    except:
-        return None
-
-print(f"Current system volume: {get_system_volume()}%")
-
-p = pyaudio.PyAudio()
-for i in range(p.get_device_count()):
-    dev = p.get_device_info_by_index(i)
-    print(f"Device {i}: {dev['name']}")
-p.terminate()
-
-# Function to set the system volume 
-def set_volume(volume=100):
-    try:
-        m = alsaaudio.Mixer(device='PCM', cardindex=1)  # Use card index 1 for your USB speaker
-        m.setvolume(volume)
-        current_volume = m.getvolume()[0]
-        print(f"Volume set to {current_volume}%")
-    except alsaaudio.ALSAAudioError as e:
-        print(f"Error setting volume: {e}")
+def play(audio_segment):
+    pydub_play(audio_segment, device="plughw:1,0")
 
 ############################### END OF TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
