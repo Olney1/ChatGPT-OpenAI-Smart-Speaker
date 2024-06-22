@@ -369,7 +369,6 @@ def main():
             pixels.listen()  # Indicate that the speaker is listening
             agent_response, image_path, prompt = recognise_speech()
             if prompt:
-                print(f"This is the general prompt being sent to OpenAI: {prompt}")
                 if agent_response:
                     print(f" This is the agent response from TavilySearch: {agent_response}")
                     generate_audio_file(agent_response)
