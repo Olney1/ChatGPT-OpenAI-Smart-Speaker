@@ -222,13 +222,13 @@ def recognise_speech():
                 play(take_photo)
                 try:
                     camera = PiCamera()
-                    camera.rotation = 180  # Rotate the camera image by 180 degrees - PLEASE REMOVE THIS LINE IF YOUR CAMERA IS ROTATED DIFFERENTLY
+                    #camera.rotation = 180  # Rotate the camera image by 180 degrees - PLEASE REMOVE THIS LINE IF YOUR CAMERA IS ROTATED DIFFERENTLY
                     camera.resolution = (640, 480)
                     camera.start_preview()
-                    time.sleep(2)  # Give the camera time to adjust
+                    time.sleep(1)  # Give the camera time to adjust
+                    play(camera_shutter)
                     image_path = "captured_image.jpg"
                     camera.capture(image_path)
-                    play(camera_shutter)
                     camera.stop_preview()
                     camera.close()
                     print("Photo captured and saved as captured_image.jpg")
