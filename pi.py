@@ -215,7 +215,7 @@ def recognise_speech():
                 return agent_response, None, None
             
             # 2. Image capture route
-            if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
+            if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower() or "on camera" in speech_text.lower():
                 print("Phrase 'on the camera' detected.")
                 play(start_camera)
                 print("Getting ready to capture an image...")
@@ -369,7 +369,7 @@ def main():
             pixels.listen()  # Indicate that the speaker is listening
             agent_response, image_path, speech_text = recognise_speech()
             if agent_response:
-                    print(f" This is the agent response from TavilySearch: {agent_response}")
+                    #print(f" This is the agent response from TavilySearch: {agent_response}") # For debugging purposes
                     generate_audio_file(agent_response)
                     play_response()
                     pixels.off()
