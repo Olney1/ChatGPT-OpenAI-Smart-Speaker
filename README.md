@@ -4,9 +4,12 @@
 
 ![Jeff the smart speaker](images/v2.jpg)
 
-## Video Demo
+## Video Demos
 
 [Video Demo using activation word "Jeffers"](videos/demo.mp4)
+<br>
+<br>
+[Video Demo with Vision](videos/demo_with_vision.mov)
 <br>
 <br>
 
