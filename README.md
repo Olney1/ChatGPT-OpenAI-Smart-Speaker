@@ -2,6 +2,8 @@
 
 ![Jeff the smart speaker](images/smart_speaker_pi.png)
 
+![Jeff the smart speaker](images/v2.jpg)
+
 ## Video Demo
 
 [Video Demo using activation word "Jeffers"](videos/demo.mp4)
@@ -122,7 +124,7 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 
 ## Usage - applies to chat.py:
 
-1. You'll need to set up the environment variable for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
+1. You'll need to set up the environment variables for your Open API Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
 You must not change the name of the variable `OPENAI_API_KEY`.
 2. Run the script using `python chat.py`.
 3. The script will prompt you to say something. Speak a sentence into your microphone. You may need to allow the program permission to access your microphone on a Mac, a prompt should appear when running the program.
@@ -140,7 +142,7 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 <br>
 
 ## Usage - applies to pi.py
-1. You'll need to set up the environment variables for your Open API Key and PicoVoice Access Key. To do this create a `.env` file in the same directory and add your API Key to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"` and `ACCESS_KEY="PICOVOICE ACCESS KEY GOES HERE"`. This is safer than hard coding your API key into the program. You must not change the name of the variables `OPENAI_API_KEY` or `ACCESS_KEY` in the script as this will cause errors.
+1. You'll need to set up the environment variables for your Open API Key, PicoVoice Access Key and Tavily API key for agent searches. To do this create a `.env` file in the same directory and add your API Keys to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"` and `ACCESS_KEY="PICOVOICE ACCESS KEY GOES HERE"` and `TAVILY_API_KEY="API KEY GOES HERE"` [Get a Tavily API key](https://app.tavily.com/sign-in). This is safer than hard coding your API key into the program.
 2. Ensure that you have the `pi.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi if using ReSpeaker.
 3. Run the script using `python3 pi.py` or `python3 pi.py 2> /dev/null` on the Raspberry Pi. The second option omits all developer warnings and errors to keep the console focused purely on the print statements.
 4. The script will prompt you to say the wake word which is programmed into the wake word custom model by Picovoice as 'Jeffers'. You can change this to any name you want. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.

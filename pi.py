@@ -54,6 +54,7 @@ language = 'en'
 # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
 tool = TavilySearchResults()
 
+# This class controls the LED pixels on the smart speaker to indicate when the speaker is listening, thinking, speaking, or off.
 class Pixels:
     PIXELS_N = 12
 
