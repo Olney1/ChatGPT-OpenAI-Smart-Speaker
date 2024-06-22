@@ -169,14 +169,15 @@ def detect_wake_word():
     return False
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
-def search_agent():
+def search_agent(speech_text):
     # Get today's date to be able to provide important information to the language model
     today = datetime.today()
     print(f"Today's date: {today}") # For debugging purposes
+    print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events. The current date is {today}."
+        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. The current date is {today} and the user wants to know {speech_text}."
     )
     prompt = initialize_agent(
         [search],
@@ -204,7 +205,7 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
-                agent = search_agent()
+                agent = search_agent(speech_text)
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
                 speech_text = agent.run(speech_text)
