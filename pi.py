@@ -109,6 +109,16 @@ pixels = Pixels()
 p = pyaudio.PyAudio()
 default_output = p.get_default_output_device_info()
 print(f"Default output device: {default_output['name']}")
+
+# Set the default output device to your USB audio device
+pyaudio.PyAudio().terminate()
+pyaudio.PyAudio = lambda: pyaudio.PyAudio().open(
+    output_device_index=1  # This should be the index of your USB audio device
+)
+
+p = pyaudio.PyAudio()
+default_output = p.get_default_output_device_info()
+print(f"Default output device: {default_output['name']}")
 p.terminate()
 
 def get_system_volume():
@@ -120,7 +130,6 @@ def get_system_volume():
         return None
 
 print(f"Current system volume: {get_system_volume()}%")
-
 
 p = pyaudio.PyAudio()
 for i in range(p.get_device_count()):
