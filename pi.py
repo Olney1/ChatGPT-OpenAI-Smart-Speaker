@@ -176,6 +176,8 @@ def detect_wake_word():
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent(speech_text):
+    # Set a location for the search agent
+    location = "Colchester, UK"
     # Get today's date to be able to provide important information to the language model
     today = datetime.today()
     print(f"Today's date: {today}") # For debugging purposes
@@ -183,7 +185,7 @@ def search_agent(speech_text):
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers and provides a brief summary. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today} and the user wants to know {speech_text}."
+        content=f"You are an AI assistant that uses Tavily search to find answers and provides a brief summary. Do not return links to websites, search deeper to find the best answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}."
     )
     agent = initialize_agent(
         [search],
@@ -211,8 +213,8 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             # 1. Agent search route
-            if any(keyword in speech_text.lower() for keyword in ["weather like today", "will it rain today", "latest news", "events are on"]):
-                print("Phrase 'weather like today', 'will it rain today', 'latest news', or 'events are on' detected. Using search agent.")
+            if any(keyword in speech_text.lower() for keyword in ["weather like", "will it rain", "latest news", "events on"]):
+                print("Phrase 'weather like', 'will it rain', 'latest news', or 'events on' detected. Using search agent.")
                 play(agent_search)
                 agent = search_agent(speech_text)
                 agent_response = agent.run(speech_text)
