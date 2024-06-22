@@ -177,16 +177,16 @@ def search_agent(speech_text):
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today} and the user wants to know {speech_text}."
+        content=f"You are an AI assistant that uses Tavily search to find answers and provides a brief summary. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today} and the user wants to know {speech_text}."
     )
-    prompt = initialize_agent(
+    agent = initialize_agent(
         [search],
         llm,
         agent=AgentType.OPENAI_FUNCTIONS,
         verbose=True, # This will print the agent's responses to the console for debugging
         agent_kwargs={"system_message": system_message},
     )
-    return prompt
+    return agent
 
 # This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
 def recognise_speech():
@@ -208,10 +208,10 @@ def recognise_speech():
                 agent = search_agent(speech_text)
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
-                speech_text = agent.run(speech_text)
+                agent_response = agent.run(speech_text)
                 print("Agent response:", speech_text)
                 # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
-                return speech_text, None
+                return agent_response
             
             if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
                 print("Phrase 'on the camera' detected.")
@@ -235,7 +235,7 @@ def recognise_speech():
                 except PiCameraError:
                     print("Pi camera not detected. Proceeding without capturing an image.")
                     return speech_text, None
-            return speech_text, None
+            return speech_text, None, 
         
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
@@ -363,9 +363,14 @@ def main():
         print("Waiting for wake word...")
         if detect_wake_word():
             pixels.listen()  # Indicate that the speaker is listening
-            prompt, image_path = recognise_speech()
+            agent_response, image_path, prompt = recognise_speech()
             if prompt:
-                print(f"This is the prompt being sent to OpenAI: {prompt}")
+                print(f"This is the general prompt being sent to OpenAI: {prompt}")
+                if agent_response:
+                    print(f" This is the agent response being sent to OpenAI via Langchain: {agent_response}")
+                    generate_audio_file(agent_response)
+                    play_response()
+                    pixels.off()
                 if image_path:
                     response = chatgpt_response_with_image(prompt, image_path)
                 else:
