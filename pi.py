@@ -4,6 +4,7 @@ import subprocess
 from openai import OpenAI
 import pyaudio
 import alsaaudio
+from datetime import datetime
 import speech_recognition as sr
 from gtts import gTTS
 from dotenv import load_dotenv
@@ -169,10 +170,13 @@ def detect_wake_word():
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent():
+    # Get today's date to be able to provide important information to the language model
+    today = datetime.today()
+    print(f"Today's date: {today}") # For debugging purposes
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content="You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events."
+        content=f"You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events. The current date is {today}."
     )
     prompt = initialize_agent(
         [search],
