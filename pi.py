@@ -33,6 +33,7 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 # This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
+# Load your keys and tokens here
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
@@ -40,11 +41,11 @@ TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
 # We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=500)
 
-# We set the OpenAI model and language settings here
+# We set the OpenAI model and language settings here for the route that follows general questions and questions with images. This is not for the agent route.
 model_engine = "gpt-4o"
 language = 'en'
 
-# Load the Tavily Search tool
+# Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
 tool = TavilySearchResults()
 
 class Pixels:
@@ -103,7 +104,6 @@ class Pixels:
 
 # Instantiate the Pixels class
 pixels = Pixels()
-
 
 # Function to instantiate the PyAudio object for playing audio
 def play(audio_segment):
