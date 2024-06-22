@@ -31,16 +31,21 @@ from langchain.schema import SystemMessage
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
+# We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
+silence = AudioSegment.silent(duration=500)
+
 # This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
 # Load your keys and tokens here
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
-
-# We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
-silence = AudioSegment.silent(duration=500)
+try:
+    TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
+except:
+    print("Tavily API key not found.")
+    tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
+    TAVILY_API_KEY = None
 
 # We set the OpenAI model and language settings here for the route that follows general questions and questions with images. This is not for the agent route.
 model_engine = "gpt-4o"
@@ -245,6 +250,7 @@ def recognise_speech():
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
             print(f"Could not request results from Google Speech Recognition service; {e}")
+
     return None, None, None
 
 # This route is called to send the user's general question to OpenAI's ChatGPT model and then play the response to the user.

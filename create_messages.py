@@ -138,4 +138,16 @@ def audio_issue():
 
     response.stream_to_file("sounds/audio_issue.mp3")
 
-audio_issue()
+def tavily_key_error():
+    
+        message = "I could not find your API key for the Tavily Search Service. Please ensure you update your .env file with a Tavily Search API key in order to use the agent."
+    
+        response = client.audio.speech.create(
+            model="tts-1",
+            voice="fable",
+            input=message,
+        )
+    
+        response.stream_to_file("sounds/tavily_key_error.mp3")
+
+tavily_key_error()
