@@ -34,7 +34,7 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
 load_dotenv()
-client = ChatOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
 
 # We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
