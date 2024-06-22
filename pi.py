@@ -207,7 +207,7 @@ def recognise_speech():
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
-                agent = search_agent()
+                agent = search_agent(speech_text)
                 agent_response = agent.run(speech_text)
                 print("Agent response:", agent_response)
                 # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
