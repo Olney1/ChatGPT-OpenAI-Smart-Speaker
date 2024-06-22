@@ -3,6 +3,7 @@ import os
 import subprocess
 from openai import OpenAI
 import pyaudio
+import alsaaudio
 import speech_recognition as sr
 from gtts import gTTS
 from dotenv import load_dotenv
@@ -128,8 +129,14 @@ for i in range(p.get_device_count()):
 p.terminate()
 
 # Function to set the system volume which is controlled in the main function
-def set_system_volume(percentage):
-    subprocess.call(['amixer', 'sset', 'PCM,0', f'{percentage}%'])
+def set_volume(volume=100):
+    try:
+        m = alsaaudio.Mixer(device='PCM', cardindex=1)  # Use card index 1 for your USB speaker
+        m.setvolume(volume)
+        current_volume = m.getvolume()[0]
+        print(f"Volume set to {current_volume}%")
+    except alsaaudio.ALSAAudioError as e:
+        print(f"Error setting volume: {e}")
 
 ############################### END OF TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
@@ -160,6 +167,7 @@ def detect_wake_word():
             rate=porcupine.sample_rate,
             channels=1,
             format=pyaudio.paInt16,
+            output_device_index=1,
             input=True,
             input_device_index=pa.get_default_input_device_info()["index"],
             frames_per_buffer=porcupine.frame_length)
