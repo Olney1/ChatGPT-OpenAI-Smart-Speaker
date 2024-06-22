@@ -203,8 +203,9 @@ def recognise_speech():
                 agent = search_agent()
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
-                response = agent.run(speech_text)
-                print("Agent response:", response)
+                speech_text = agent.run(speech_text)
+                print("Agent response:", speech_text)
+                # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
                 return speech_text, None
             
             if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower():
@@ -225,11 +226,12 @@ def recognise_speech():
                     camera.close()
                     print("Photo captured and saved as captured_image.jpg")
                     return speech_text, image_path
+                
                 except PiCameraError:
                     print("Pi camera not detected. Proceeding without capturing an image.")
                     return speech_text, None
-            
             return speech_text, None
+        
         except sr.UnknownValueError:
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
@@ -315,8 +317,8 @@ def chatgpt_response_with_image(prompt, image_path):
             # Whilst we are waiting for the response, we can play a checking message to improve the user experience.
             checking_on_that = silence + AudioSegment.from_mp3("sounds/checking.mp3")
             play(checking_on_that)
-            
             return response
+        
         except Exception as e:
             # If there is an error, we can play a message to the user to indicate that there was an issue with the API call.
             print(f"An API error occurred: {str(e)}")
