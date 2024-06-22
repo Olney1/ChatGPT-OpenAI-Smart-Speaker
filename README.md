@@ -9,7 +9,7 @@
 [Video Demo using activation word "Jeffers"](videos/demo.mp4)
 <br>
 <br>
-[Video Demo with Vision](videos/demo_with_vision.mov)
+[Video Demo with Vision](videos/demo_with_vision.mp4)
 <br>
 <br>
 
