@@ -367,17 +367,17 @@ def main():
         print("Waiting for wake word...")
         if detect_wake_word():
             pixels.listen()  # Indicate that the speaker is listening
-            agent_response, image_path, prompt = recognise_speech()
-            if prompt:
-                if agent_response:
+            agent_response, image_path, speech_text = recognise_speech()
+            if agent_response:
                     print(f" This is the agent response from TavilySearch: {agent_response}")
                     generate_audio_file(agent_response)
                     play_response()
                     pixels.off()
+            if speech_text:
                 if image_path:
-                    response = chatgpt_response_with_image(prompt, image_path)
+                    response = chatgpt_response_with_image(speech_text, image_path)
                 else:
-                    response = chatgpt_response(prompt)
+                    response = chatgpt_response(speech_text)
                 if response:
                     message = response.choices[0].message.content
                     print(message)
