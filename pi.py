@@ -103,6 +103,8 @@ class Pixels:
 # Instantiate the Pixels class
 pixels = Pixels()
 
+############################### TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
+
 p = pyaudio.PyAudio()
 default_output = p.get_default_output_device_info()
 print(f"Default output device: {default_output['name']}")
@@ -118,9 +120,18 @@ def get_system_volume():
 
 print(f"Current system volume: {get_system_volume()}%")
 
+
+p = pyaudio.PyAudio()
+for i in range(p.get_device_count()):
+    dev = p.get_device_info_by_index(i)
+    print(f"Device {i}: {dev['name']}")
+p.terminate()
+
 # Function to set the system volume which is controlled in the main function
 def set_system_volume(percentage):
     subprocess.call(['amixer', 'sset', 'PCM,0', f'{percentage}%'])
+
+############################### END OF TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
 # This function is called first to detect the wake word "Jeffers" and then proceed to listen for the user's question.
 def detect_wake_word():
