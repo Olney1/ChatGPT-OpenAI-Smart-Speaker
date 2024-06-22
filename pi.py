@@ -205,11 +205,11 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
-                agent = search_agent(speech_text)
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
+                agent = search_agent()
                 agent_response = agent.run(speech_text)
-                print("Agent response:", speech_text)
+                print("Agent response:", agent_response)
                 # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
                 return agent_response
             
@@ -367,7 +367,7 @@ def main():
             if prompt:
                 print(f"This is the general prompt being sent to OpenAI: {prompt}")
                 if agent_response:
-                    print(f" This is the agent response being sent to OpenAI via Langchain: {agent_response}")
+                    print(f" This is the agent response from TavilySearch: {agent_response}")
                     generate_audio_file(agent_response)
                     play_response()
                     pixels.off()
