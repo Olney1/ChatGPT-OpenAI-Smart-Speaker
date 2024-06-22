@@ -107,7 +107,7 @@ pixels = Pixels()
 ############################### TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
 def play(audio_segment):
-    pydub_play(audio_segment, device="plughw:1,0")
+    pydub_play(audio_segment)
 
 ############################### END OF TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
