@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.9
 import os
+import subprocess
 from openai import OpenAI
 import pyaudio
 import speech_recognition as sr
@@ -102,6 +103,11 @@ class Pixels:
 # Instantiate the Pixels class
 pixels = Pixels()
 
+# Function to set the system volume which is controlled in the main function
+def set_system_volume(percentage):
+    subprocess.call(['amixer', 'sset', 'PCM,0', f'{percentage}%'])
+
+# This function is called first to detect the wake word "Jeffers" and then proceed to listen for the user's question.
 def detect_wake_word():
     # Here we use the Porcupine wake word detection engine to detect the wake word "Jeffers" and then proceed to listen for the user's question.
     porcupine = None
@@ -329,6 +335,8 @@ def play_response():
     play(audio_response)
 
 def main():
+    # Set the system volume
+    set_system_volume(90)
     # This is the main function that runs the program.
     pixels.wakeup()
     device_on = silence + AudioSegment.from_mp3("sounds/on.mp3")
