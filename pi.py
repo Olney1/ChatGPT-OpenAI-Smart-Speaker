@@ -104,12 +104,10 @@ class Pixels:
 # Instantiate the Pixels class
 pixels = Pixels()
 
-############################### TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
+# Function to instantiate the PyAudio object for playing audio
 def play(audio_segment):
     pydub_play(audio_segment)
-
-############################### END OF TESTING THE HARDWARE AND SOFTWARE SETUP ###############################
 
 # This function is called first to detect the wake word "Jeffers" and then proceed to listen for the user's question.
 def detect_wake_word():
@@ -169,21 +167,23 @@ def detect_wake_word():
             porcupine.delete()
     return False
 
-def initialize_search_agent():
+# This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
+def search_agent():
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
         content="You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events."
     )
-    agent = initialize_agent(
+    prompt = initialize_agent(
         [search],
         llm,
         agent=AgentType.OPENAI_FUNCTIONS,
-        verbose=True,
+        verbose=True, # This will print the agent's responses to the console for debugging
         agent_kwargs={"system_message": system_message},
     )
-    return agent
+    return prompt
 
+# This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
 def recognise_speech():
     # Here we use the Google Speech Recognition engine to convert the user's question into text and then send it to OpenAI for a response.
     r = sr.Recognizer()
@@ -200,7 +200,7 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             if any(keyword in speech_text.lower() for keyword in ["weather", "news", "event", "events"]):
-                agent = initialize_search_agent()
+                agent = search_agent()
                 print("Phrase 'weather', 'news', or 'event' detected. Using search agent.")
                 play(agent_search)
                 response = agent.run(speech_text)
@@ -236,6 +236,7 @@ def recognise_speech():
             print(f"Could not request results from Google Speech Recognition service; {e}")
     return None, None
 
+# This route is called to send the user's general question to OpenAI's ChatGPT model and then play the response to the user.
 def chatgpt_response(prompt):
     # Here we send the user's question to OpenAI's ChatGPT model and then play the response to the user.
     if prompt is not None:
@@ -268,10 +269,12 @@ def chatgpt_response(prompt):
     else:
         return None
 
+# This route is called to encode the image as base64 when an image is taken.
 def encode_image(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
+# This route is called if the user's question also includes an image to send to OpenAI's ChatGPT model.
 def chatgpt_response_with_image(prompt, image_path):
     if prompt is not None:
         try:
@@ -322,7 +325,8 @@ def chatgpt_response_with_image(prompt, image_path):
             return None
     else:
         return None
- 
+
+# This route is called to generate an audio file on demand from the response from OpenAI's ChatGPT model.
 def generate_audio_file(message):
     # This is a standalone function to generate an audio file from the response from OpenAI's ChatGPT model.
     speech_file_path = Path(__file__).parent / "response.mp3"
@@ -333,12 +337,13 @@ def generate_audio_file(message):
 )
     response.stream_to_file(speech_file_path)
  
+# This is a standalone function to which we can call to play the audio file and wake speaking LEDs to indicate that the smart speaker is responding to the user.
 def play_response():
-    # This is a standalone function to which we can call to play the audio file and wake speaking LEDs to indicate that the smart speaker is responding to the user.
     pixels.speak()
     audio_response = silence + AudioSegment.from_mp3("response.mp3")
     play(audio_response)
 
+# This is the main function that runs the program and controls the flow.
 def main():
     # This is the main function that runs the program.
     pixels.wakeup()
