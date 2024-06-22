@@ -128,7 +128,7 @@ for i in range(p.get_device_count()):
     print(f"Device {i}: {dev['name']}")
 p.terminate()
 
-# Function to set the system volume which is controlled in the main function
+# Function to set the system volume 
 def set_volume(volume=100):
     try:
         m = alsaaudio.Mixer(device='PCM', cardindex=1)  # Use card index 1 for your USB speaker
@@ -369,8 +369,6 @@ def play_response():
     play(audio_response)
 
 def main():
-    # Set the system volume
-    set_system_volume(90)
     # This is the main function that runs the program.
     pixels.wakeup()
     device_on = silence + AudioSegment.from_mp3("sounds/on.mp3")
