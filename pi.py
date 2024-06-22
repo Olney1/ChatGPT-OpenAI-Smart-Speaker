@@ -159,7 +159,7 @@ def detect_wake_word():
     return False
 
 def initialize_search_agent():
-    llm = OpenAI(temperature=0)
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     search = TavilySearchResults()
     system_message = SystemMessage(
         content="You are an AI assistant that uses Tavily search to answer questions about weather, news, and recent events."
