@@ -30,8 +30,6 @@ The `chat.py` and `test.py` scripts run directly on your PC/Mac. They both allow
 
 ## Running on Raspberry Pi (use the pi.py script)
 
-![Deprecated](https://img.shields.io/badge/-DEPRECATED-red) The `smart_speaker.py` script implements the same functionality on a Raspberry Pi in the easiest way but utilises the RESPEAKER light show and other voice feedback. Please read the important notes in the section below and ensure that you have the `smart_speaker.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder together on your Pi if you plan to use the ReSpeaker hardware. You will need to have a microphone attached to your Raspberry Pi otherwise. I am using the in-built microphone on the RESPEAKER and a seperate USB speaker for output. Ensure that these are setup correctly. You can test that the speaker and microphone are set up correctly as the default devices by using a software program such as Audacity. Audacity is buggy on startup but still works on a Raspberry Pi (see instructions in the important notes section below).
-
 ![New](https://img.shields.io/badge/-NEW-green)
  The `pi.py` script is a new and more advanced custom version of the `smart_speaker.py` script and is the most advanced script similar to a real smart speaker. The purpose of this script is to offload the wake up word to a custom model build via PicoVoice (`https://console.picovoice.ai/`). This improves efficiency and long term usage reliability. This script will be the main script for development moving forward due to greater reliability and more advanced features to be added regularly.
 
@@ -44,11 +42,6 @@ The `chat.py` and `test.py` scripts run directly on your PC/Mac. They both allow
 - Run `brew install portaudio` after installing HomeBrew: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 - You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `playsound, python-dotenv` and `pyobjc` if you are on a Mac. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. 
 - Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS playsound python-dotenv apa102-pi gpiozero pyobjc`
-
-<br>
-
-## Prerequisites - smart_speaker.py ![Deprecated](https://img.shields.io/badge/-DEPRECATED-red)
-This script is no longer supported.
 
 <br>
 
@@ -67,14 +60,13 @@ Run the following on your Raspberry Pi terminal:
 
 3. `git clone https://github.com/Olney1/ChatGPT-OpenAI-Smart-Speaker`
 
-4. You need to install the following packages: `openai`, `gTTS`, `pyaudio`, `SpeechRecognition`, `pydub, python-dotenv`, `pvporcupine` `opencv-python-headless`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment. Python 3.11 requires a virtual environment on your Pi.
-Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS pydub python-dotenv apa102-pi gpiozero`
+4. Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip install openai pyaudio SpeechRecognition gTTS pydub python-dotenv apa102-pi gpiozero` Next, install the dependencies, `pip install -r requirements.txt`. I am using Python 3.9 `#!/usr/bin/env python3.9`. You can install these packages using pip or use pipenv if you wish to contain a virtual environment.
 
 5. PyAudio relies on PortAudio as a dependency. You can install it using the following command: `sudo apt-get install portaudio19-dev`
 
 6. Pydub dependencies: You need to have ffmpeg installed on your system. On a Raspberry Pi you can install it using: `sudo apt-get install ffmpeg`. You may also need simpleaudio if you run into issues with the script hanging when finding the wake word, so it's best to install these packages just in case: `sudo apt-get install python3-dev` (for development headers to compile) and `install simpleaudio` (for a different backend to play mp3 files) and `sudo apt-get install libasound2-dev` (necessary dependencies).
 
-7. Install support for the lights on the RESPEAKER board. You'll need APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`
+7. If you are using the RESPEAKER, follow this guide to install the required dependencies: (`https://wiki.seeedstudio.com/ReSpeaker_4_Mic_Array_for_Raspberry_Pi/#getting-started`). Then install support for the lights on the RESPEAKER board. You'll need APA102 LED: `sudo apt install -y python3-rpi.gpio` and then `sudo pip3 install apa102-pi`.
 
 8. Activate SPI: sudo raspi-config; Go to "Interface Options"; Go to "SPI"; Enable SPI; While you are at it: Do change the default password! Exit the tool and reboot.
 

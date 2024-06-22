@@ -1,0 +1,17 @@
+openai
+pyaudio
+python-alsa-audio
+SpeechRecognition
+gTTS
+python-dotenv
+apa102-pi
+gpiozero
+RPi.GPIO
+alexa-led-pattern
+pydub
+pvporcupine
+picamera
+langchain-community
+langchain
+langchain-openai
+langchainhub

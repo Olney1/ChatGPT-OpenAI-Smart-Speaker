@@ -28,6 +28,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain.agents import AgentType, initialize_agent
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage
+
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
@@ -51,8 +52,14 @@ except:
 model_engine = "gpt-4o"
 language = 'en'
 
-# Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-tool = TavilySearchResults()
+# Not required but you can set up Langsmith for monitoring and tracing following GitHub documentation: https://docs.smith.langchain.com/ 
+# Just by setting the environment variables, Langsmith will automatically start monitoring and tracing how your agent is performing and log each run.
+# Using Langsmith will help you improve your agent's performance over time by understanding the methods used when processing your questions.
+if os.getenv("LANGCHAIN_API_KEY") and os.getenv("LANGCHAIN_PROJECT") and os.getenv("LANGCHAIN_TRACING_V2"):
+    print("Langsmith monitoring and tracing enabled.")
+    LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
+    LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
+    LANGCHAIN_TRACING_V2 = os.getenv("LANGCHAIN_TRACING_V2")
 
 # This class controls the LED pixels on the smart speaker to indicate when the speaker is listening, thinking, speaking, or off.
 class Pixels:
@@ -176,16 +183,18 @@ def detect_wake_word():
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent(speech_text):
-    # Set a location for the search agent
+    # Set a location for the search agent. Change this to your own location.
     location = "Colchester, UK"
     # Get today's date to be able to provide important information to the language model
     today = datetime.today()
     print(f"Today's date: {today}") # For debugging purposes
     print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
+    # Load the ChatGPT model for the agent
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
+    # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
     search = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers and provides a brief summary. Do not return links to websites, search deeper to find the best answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}."
+        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise."
     )
     agent = initialize_agent(
         [search],
@@ -213,8 +222,9 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             # 1. Agent search route
-            if any(keyword in speech_text.lower() for keyword in ["activate search", "weather like", "will it rain", "latest news", "events on"]):
-                print("Phrase 'activate search', 'weather like', 'will it rain', 'latest news', or 'events on' detected. Using search agent.")
+            # These keywords are open for editing or removal to suit your own use case. Activate search is a good catch-all phrase to trigger the search agent.
+            if any(keyword in speech_text.lower() for keyword in ["activate search", "what's the weather like", "will it rain", "latest news", "events on"]):
+                print("Phrase 'activate search', 'what's the weather like', 'will it rain', 'latest news', or 'events on' detected. Using search agent.")
                 play(agent_search)
                 agent = search_agent(speech_text)
                 agent_response = agent.run(speech_text)
