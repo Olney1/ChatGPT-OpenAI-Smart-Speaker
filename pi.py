@@ -103,6 +103,21 @@ class Pixels:
 # Instantiate the Pixels class
 pixels = Pixels()
 
+p = pyaudio.PyAudio()
+default_output = p.get_default_output_device_info()
+print(f"Default output device: {default_output['name']}")
+p.terminate()
+
+def get_system_volume():
+    try:
+        output = subprocess.check_output(['amixer', 'sget', 'PCM'], universal_newlines=True)
+        volume = output.split('[')[1].split('%')[0]
+        return int(volume)
+    except:
+        return None
+
+print(f"Current system volume: {get_system_volume()}%")
+
 # Function to set the system volume which is controlled in the main function
 def set_system_volume(percentage):
     subprocess.call(['amixer', 'sset', 'PCM,0', f'{percentage}%'])
