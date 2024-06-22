@@ -85,7 +85,7 @@ Firstly, update your tools: `pip install --upgrade pip setuptools` then `pip ins
 ## Prerequisites - pi.py ![New](https://img.shields.io/badge/-NEW-green)
 To run pi.py you will need a Raspberry Pi 4b (I'm using the 4GB model but 2GB should be enough), ReSpeaker 4-Mic Array for Raspberry Pi and USB speakers.
 
-You will also need a developer account and API key with OpenAI (`https://platform.openai.com/overview`) and an Access Key and Custom Voice Model with PicoVoice (`https://console.picovoice.ai/`) and (`https://console.picovoice.ai/ppn` respectively. Please create your own voice model and download the correct version for use on a Raspberry Pi)
+You will also need a developer account and API key with OpenAI (`https://platform.openai.com/overview`), a Tavily Search agent API key (`https://app.tavily.com/sign-in`) and an Access Key and Custom Voice Model with PicoVoice (`https://console.picovoice.ai/`) and (`https://console.picovoice.ai/ppn` respectively. Please create your own voice model and download the correct version for use on a Raspberry Pi)
 
 Now on to the Pi setup. Let's get started!
 
@@ -142,7 +142,7 @@ You must not change the name of the variable `OPENAI_API_KEY`.
 <br>
 
 ## Usage - applies to pi.py
-1. You'll need to set up the environment variables for your Open API Key, PicoVoice Access Key and Tavily API key for agent searches. To do this create a `.env` file in the same directory and add your API Keys to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"` and `ACCESS_KEY="PICOVOICE ACCESS KEY GOES HERE"` and `TAVILY_API_KEY="API KEY GOES HERE"` [Get a Tavily API key](https://app.tavily.com/sign-in). This is safer than hard coding your API key into the program.
+1. You'll need to set up the environment variables for your Open API Key, PicoVoice Access Key and Tavily API key for agent searches. To do this create a `.env` file in the same directory and add your API Keys to the file like this: `OPENAI_API_KEY="API KEY GOES HERE"` and `ACCESS_KEY="PICOVOICE ACCESS KEY GOES HERE"` and `TAVILY_API_KEY="API KEY GOES HERE"`. This is safer than hard coding your API key into the program.
 2. Ensure that you have the `pi.py` script along with `apa102.py` and `alexa_led_pattern.py` scripts in the same folder saved on your Pi if using ReSpeaker.
 3. Run the script using `python3 pi.py` or `python3 pi.py 2> /dev/null` on the Raspberry Pi. The second option omits all developer warnings and errors to keep the console focused purely on the print statements.
 4. The script will prompt you to say the wake word which is programmed into the wake word custom model by Picovoice as 'Jeffers'. You can change this to any name you want. Once the wake word has been detected the lights will light up blue. It will now be ready for you to ask your question. When you have asked your question, or when the microphone picks up and processes noise, the lights will rotate a blue colour meaning that your recording sample/question is being sent to OpenAI.
