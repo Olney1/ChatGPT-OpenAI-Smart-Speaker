@@ -49,8 +49,8 @@ if not os.environ.get("ACCESS_KEY"):
     ACCESS_KEY = None
 # Check if the Langsmith API key is set and load it, otherwise print a message to let the user know that the key is missing.
 if not os.environ.get("LANGCHAIN_API_KEY"):
-    print("Langsmith API key not found.")
-    langsmith_key_not_found = silence + AudioSegment.from_mp3("sounds/langsmith_key_error.mp3")
+    print("LangChain API key not found.")
+    langsmith_key_not_found = silence + AudioSegment.from_mp3("sounds/langchain_key_error.mp3")
     LANGCHAIN_API_KEY = None
 # Check if the Tavily API key is set and load it, otherwise print a message to let the user know that the key is missing.
 if not os.environ.get("TAVILY_API_KEY"):
