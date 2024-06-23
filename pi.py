@@ -55,11 +55,11 @@ language = 'en'
 # Not required but you can set up Langsmith for monitoring and tracing following GitHub documentation: https://docs.smith.langchain.com/ 
 # Just by setting the environment variables, Langsmith will automatically start monitoring and tracing how your agent is performing and log each run.
 # Using Langsmith will help you improve your agent's performance over time by understanding the methods used when processing your questions.
-if os.getenv("LANGCHAIN_API_KEY") and os.getenv("LANGCHAIN_PROJECT") and os.getenv("LANGCHAIN_TRACING_V2"):
-    print("Langsmith monitoring and tracing enabled.")
+if all(os.getenv(var) for var in ["LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT", "LANGCHAIN_TRACING_V2"]):
     LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
     LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
     LANGCHAIN_TRACING_V2 = os.getenv("LANGCHAIN_TRACING_V2")
+    print("Langsmith monitoring and tracing enabled.")
 
 # This class controls the LED pixels on the smart speaker to indicate when the speaker is listening, thinking, speaking, or off.
 class Pixels:
@@ -192,14 +192,14 @@ def search_agent(speech_text):
     # Load the ChatGPT model for the agent
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-    search = TavilySearchResults()
+    tavily_tool = TavilySearchResults()
     system_message = SystemMessage(
         content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise."
     )
     agent = initialize_agent(
-        [search],
+        [tavily_tool],
         llm,
-        agent=AgentType.OPENAI_FUNCTIONS,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
         verbose=True, # This will print the agent's responses to the console for debugging
         agent_kwargs={"system_message": system_message},
     )
