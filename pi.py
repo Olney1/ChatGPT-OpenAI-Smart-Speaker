@@ -35,18 +35,37 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 # We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=500)
 
+############## HANDLE API KEY LOADING ERRORS ##############
+
+# Check if the required API keys are set, otherwise warn the user the speaker will not be able to function.
+if not os.environ.get("OPENAI_API_KEY"):
+    print("OpenAI API key not found.")
+    openai_key_not_found = silence + AudioSegment.from_mp3("sounds/openai_key_error.mp3")
+    OPENAI_API_KEY = None
+# Check if the Picovoice Access key is set and load it, otherwise print a message to let the user know that the key is missing.
+if not os.environ.get("ACCESS_KEY"):
+    print("Picovoice Access key not found.")
+    picovoice_key_not_found = silence + AudioSegment.from_mp3("sounds/picovoice_key_error.mp3")
+    ACCESS_KEY = None
+# Check if the Langsmith API key is set and load it, otherwise print a message to let the user know that the key is missing.
+if not os.environ.get("LANGCHAIN_API_KEY"):
+    print("Langsmith API key not found.")
+    langsmith_key_not_found = silence + AudioSegment.from_mp3("sounds/langsmith_key_error.mp3")
+    LANGCHAIN_API_KEY = None
+# Check if the Tavily API key is set and load it, otherwise print a message to let the user know that the key is missing.
+if not os.environ.get("TAVILY_API_KEY"):
+    print("Tavily API key not found.")
+    tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
+    TAVILY_API_KEY = None
+
+############## END HANDLING API KEY LOADING ERRORS ##############
+
 # This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
 # Load your keys and tokens here
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-try:
-    TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
-except:
-    print("Tavily API key not found.")
-    tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
-    TAVILY_API_KEY = None
 
 # We set the OpenAI model and language settings here for the route that follows general questions and questions with images. This is not for the agent route.
 model_engine = "gpt-4o"
@@ -60,6 +79,11 @@ if all(os.getenv(var) for var in ["LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT", "LAN
     LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
     LANGCHAIN_TRACING_V2 = os.getenv("LANGCHAIN_TRACING_V2")
     print("Langsmith monitoring and tracing enabled.")
+else:
+    LANGCHAIN_API_KEY = None
+    LANGCHAIN_PROJECT = None
+    LANGCHAIN_TRACING_V2 = None
+    print("Langsmith monitoring and tracing not enabled.")
 
 # This class controls the LED pixels on the smart speaker to indicate when the speaker is listening, thinking, speaking, or off.
 class Pixels:
@@ -168,9 +192,11 @@ def detect_wake_word():
                 return True
     except:
         # Deal with any errors that may occur from using the PicoVoice Service (https://console.picovoice.ai/)
-        print("Error with wake word detection, Porcupine or the PicoVoice Service.")
+        print("Error starting the smart speaker speech detection.")
         error_response = silence + AudioSegment.from_mp3("sounds/picovoice_issue.mp3")
         play(error_response)
+        # Add a delay as we are on a loop and we don't want to keep calling the wake word detection getting the same error message response.
+        time.sleep(25)
 
     finally:
         if audio_stream is not None:
@@ -194,14 +220,14 @@ def search_agent(speech_text):
     # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
     tavily_tool = TavilySearchResults()
     system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers. Do not return links to websites, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise."
+        content=f"You are an AI assistant that uses Tavily search to find answers. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise."
     )
     agent = initialize_agent(
         [tavily_tool],
         llm,
-        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
-        verbose=True, # This will print the agent's responses to the console for debugging
         agent_kwargs={"system_message": system_message},
+        agent=AgentType.OPENAI_FUNCTIONS,
+        verbose=True, # This will print the agent's responses to the console for debugging
     )
     return agent
 

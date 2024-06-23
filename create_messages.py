@@ -150,4 +150,29 @@ def tavily_key_error():
     
         response.stream_to_file("sounds/tavily_key_error.mp3")
 
-tavily_key_error()
+
+def openai_key_error():
+        
+            message = "I could not find your OpenAI API key. Please ensure you update your .env file with an OpenAI API key in order to use the agent."
+        
+            response = client.audio.speech.create(
+                model="tts-1",
+                voice="fable",
+                input=message,
+            )
+        
+            response.stream_to_file("sounds/openai_key_error.mp3")
+
+def picovoice_key_error():
+        
+            message = "I could not find your Picovoice API key. Please ensure you update your .env file with a Picovoice API key in order to use the agent."
+        
+            response = client.audio.speech.create(
+                model="tts-1",
+                voice="fable",
+                input=message,
+            )
+        
+            response.stream_to_file("sounds/picovoice_key_error.mp3")
+
+picovoice_key_error()
