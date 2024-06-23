@@ -35,31 +35,6 @@ os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 # We add 0.5 second silence globally due to initial buffering how pydub handles audio in memory
 silence = AudioSegment.silent(duration=500)
 
-############## HANDLE API KEY LOADING ERRORS ##############
-
-# Check if the required API keys are set, otherwise warn the user the speaker will not be able to function.
-if not os.environ.get("OPENAI_API_KEY"):
-    print("OpenAI API key not found.")
-    openai_key_not_found = silence + AudioSegment.from_mp3("sounds/openai_key_error.mp3")
-    OPENAI_API_KEY = None
-# Check if the Picovoice Access key is set and load it, otherwise print a message to let the user know that the key is missing.
-if not os.environ.get("ACCESS_KEY"):
-    print("Picovoice Access key not found.")
-    picovoice_key_not_found = silence + AudioSegment.from_mp3("sounds/picovoice_key_error.mp3")
-    ACCESS_KEY = None
-# Check if the Langsmith API key is set and load it, otherwise print a message to let the user know that the key is missing.
-if not os.environ.get("LANGCHAIN_API_KEY"):
-    print("LangChain API key not found.")
-    langsmith_key_not_found = silence + AudioSegment.from_mp3("sounds/langchain_key_error.mp3")
-    LANGCHAIN_API_KEY = None
-# Check if the Tavily API key is set and load it, otherwise print a message to let the user know that the key is missing.
-if not os.environ.get("TAVILY_API_KEY"):
-    print("Tavily API key not found.")
-    tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
-    TAVILY_API_KEY = None
-
-############## END HANDLING API KEY LOADING ERRORS ##############
-
 # This is our pre-prompt configuration to precede the user's question to enable OpenAI to understand that it's acting as a smart speaker and add any other required information. We will send this in the OpenAI call as part of the system content in messages.
 pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:"
 
