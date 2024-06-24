@@ -125,7 +125,17 @@ Higher values of `temperature` will result in more diverse and random responses,
 
 ## Important notes for Raspberry Pi Installation
 
-If you are using the same USB speaker in my video you will need to run `sudo apt-get install pulseaudio` to install support for this.
+If you are using the same USB speaker in my video you will need to run `sudo apt-get install pulseaudio` to install support for this. This may also require you to set a command to start pulseaudio on every boot: `pulseaudio --start`.
+
+### Adding a Start Command on Boot
+
+Open the terminal and type: `sudo nano /etc/rc. local`
+
+After important network/start commands add this: `su -l pi -c '/usr/bin/python3 /home/pi/ChatGPT-OpenAI-Smart-Speaker/ && pulseaudio --start && python3 pi.py 2> /dev/null’`
+
+Be sure to leave the line exit 0 at the end, then save the file and exit. In nano, to exit, type Ctrl-x, and then Y
+
+### ReSpeaker
 
 If you want to use ReSpeaker for the lights, you can purchase this from most of the major online stores that stock Raspberry Pi. 
 Here is the online guide: https://wiki.seeedstudio.com/ReSpeaker_4_Mic_Array_for_Raspberry_Pi/
@@ -137,6 +147,8 @@ To test your microphone and speakers install Audacity on your Raspberry Pi:
 `sudo apt install audacity`
 
 `audacity`
+
+### Other Possible Issues
 
 On the raspberry pi you may encounter an error regarding the installation of `flac`.
 
