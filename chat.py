@@ -56,12 +56,12 @@ def chatgpt_response(prompt):
 
 def generate_audio_file(message):
     speech_file_path = Path(__file__).parent / "response.mp3"
-    response = client.audio.speech.create(
+    with client.audio.speech.with_streaming_response.create(
     model="tts-1",
     voice="fable",
-    input=message
-)
-    response.stream_to_file(speech_file_path)
+    input=message,
+) as response:
+        response.stream_to_file(speech_file_path)
  
 def play_audio_file():
     # play the audio file
