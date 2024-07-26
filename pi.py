@@ -361,12 +361,12 @@ def chatgpt_response_with_image(prompt, image_path):
 def generate_audio_file(message):
     # This is a standalone function to generate an audio file from the response from OpenAI's ChatGPT model.
     speech_file_path = Path(__file__).parent / "response.mp3"
-    response = client.audio.speech.create(
-    model="tts-1",
-    voice="fable",
-    input=message
-)
-    response.stream_to_file(speech_file_path)
+    with client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    ) as response:
+        response.stream_to_file(speech_file_path)
  
 # This is a standalone function to which we can call to play the audio file and wake speaking LEDs to indicate that the smart speaker is responding to the user.
 def play_response():
