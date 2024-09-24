@@ -48,7 +48,7 @@ except:
     TAVILY_API_KEY = None
 
 # We set the OpenAI model and language settings here for the route that follows general questions and questions with images. This is not for the agent route.
-model_engine = "gpt-4-turbo"
+model_engine = "gpt-4o"
 language = 'en'
 
 # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
