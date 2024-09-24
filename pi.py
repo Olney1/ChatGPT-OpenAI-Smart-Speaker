@@ -197,6 +197,7 @@ def recognise_speech():
         take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
         camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
         agent_search = silence + AudioSegment.from_mp3("sounds/agent.mp3")
+        camera_issue = silence + AudioSegment.from_mp3("sounds/camera_issue.mp3")
         print("Listening for your question...")
         audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
         print("Processing your question...")
@@ -233,8 +234,9 @@ def recognise_speech():
                     return None, image_path, speech_text
                 
                 except PiCameraError:
-                    print("Pi camera not detected. Proceeding without capturing an image.")
-                    return None, None, speech_text
+                    print("Pi camera not detected. Please check your camera settings.")
+                    play(camera_issue)
+                    return None, None, None
                 
             # 3. General speech route - no agent or image capture
             return None, None, speech_text

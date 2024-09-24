@@ -150,4 +150,16 @@ def tavily_key_error():
     
         response.stream_to_file("sounds/tavily_key_error.mp3")
 
-tavily_key_error()
+def camera_issue():
+
+    message = "Sorry, there was an issue opening Pi Camera."
+
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="fable",
+        input=message,
+    )
+
+    response.stream_to_file("sounds/camera_issue.mp3")
+
+camera_issue()
