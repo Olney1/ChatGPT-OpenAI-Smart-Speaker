@@ -24,7 +24,7 @@ import pvporcupine
 import struct
 from picamera import PiCamera, PiCameraError
 import base64
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.tools import TavilySearchResults
 from langchain.agents import AgentType, initialize_agent
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage
@@ -52,7 +52,15 @@ model_engine = "chatgpt-4o-latest"
 language = 'en'
 
 # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-tool = TavilySearchResults()
+tool = TavilySearchResults(
+    max_results=20,
+    include_answer=True,
+    include_raw_content=True,
+    include_images=False,
+    search_depth="advanced",
+    # include_domains = []
+    # exclude_domains = []
+)
 
 class Pixels:
     PIXELS_N = 12
@@ -183,8 +191,7 @@ def search_agent(speech_text):
     print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-    search = TavilySearchResults(max_results=6) # Set the max number of search results to return
-    search_results = search.invoke(f"You are an AI assistant that uses Tavily search to find answers. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise.")
+    search_results = tool.invoke(f"You are an AI assistant that uses Tavily search to find answers. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise.")
     #print(search_results) # For debugging purposes
     return search_results
 
