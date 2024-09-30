@@ -195,6 +195,22 @@ def search_agent(speech_text):
     search_results = tool.invoke({
         'query': f"The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric."
     })#print(search_results) # For debugging purposes
+    
+    # Process the search results
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+    
+    # Prepare the content for the LLM
+    content = "\n".join([result['content'] for result in search_results])
+    
+    # Use the LLM to summarize and extract relevant information
+    response = llm.invoke(f"""
+    Based on the following search results, provide a concise and relevant answer to the user's question: "{speech_text}"
+    
+    Search results:
+    {content}
+    
+    Please keep the response short, informative, and directly addressing the user's question. Do not mention sources or include any URLs.
+    """)
     return search_results
 
 # This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
