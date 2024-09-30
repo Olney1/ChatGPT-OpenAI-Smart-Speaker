@@ -184,20 +184,17 @@ def detect_wake_word():
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent(speech_text):
-    # Get today's date to be able to provide important information to the language model
     today = datetime.today()
-    # Set your own location here
     location = "Colchester, UK"
-    print(f"Today's date: {today}") # For debugging purposes
-    print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
-    # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
+    print(f"Today's date: {today}")
+    print(f"User's question understood via the search_agent function: {speech_text}")
+    
     search_results = tool.invoke({
         'query': f"The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric."
-    })#print(search_results) # For debugging purposes
+    })
     
     # Process the search results
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
     
     # Prepare the content for the LLM
     content = "\n".join([result['content'] for result in search_results])
@@ -211,7 +208,8 @@ def search_agent(speech_text):
     
     Please keep the response short, informative, and directly addressing the user's question. Do not mention sources or include any URLs.
     """)
-    return search_results
+    
+    return response.content
 
 # This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
 def recognise_speech():
@@ -395,10 +393,10 @@ def main():
             pixels.listen()  # Indicate that the speaker is listening
             agent_response, image_path, speech_text = recognise_speech()
             if agent_response:
-                    #print(f" This is the agent response from TavilySearch: {agent_response}") # For debugging purposes
-                    generate_audio_file(agent_response)
-                    play_response()
-                    pixels.off()
+                print(f"Processed agent response: {agent_response}")  # For debugging
+                generate_audio_file(agent_response)
+                play_response()
+                pixels.off()
             if speech_text:
                 if image_path:
                     response = chatgpt_response_with_image(speech_text, image_path)
