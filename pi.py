@@ -194,12 +194,12 @@ def search_agent(speech_text):
     })
     
     # Process the search results
-    llm = ChatOpenAI(model="gpt-4", temperature=0.7)
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
     
     # Prepare the content for the LLM
     content = "\n".join([result['content'] for result in search_results])
     
-    # Use the LLM to summarize and extract relevant information
+    # Use the LLM to summarise and extract relevant information
     response = llm.invoke(f"""
     Based on the following search results, provide a concise and relevant answer to the user's question: "{speech_text}"
     
