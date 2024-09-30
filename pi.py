@@ -42,8 +42,9 @@ load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 try:
     TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
+    print(f"Tavily search API key found")
 except:
-    print("Tavily API key not found.")
+    print("Tavily search API key not found.")
     tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
     TAVILY_API_KEY = None
 
@@ -191,8 +192,9 @@ def search_agent(speech_text):
     print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
     llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
     # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-    search_results = tool.invoke(f"You are an AI assistant that uses Tavily search to find answers. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise.")
-    #print(search_results) # For debugging purposes
+    search_results = tool.invoke({
+        'query': f"The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric."
+    })#print(search_results) # For debugging purposes
     return search_results
 
 # This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
