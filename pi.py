@@ -213,8 +213,8 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             # 1. Agent search route
-            if any(keyword in speech_text.lower() for keyword in ["weather like today", "will it rain today", "latest news", "events are on"]):
-                print("Phrase 'weather like today', 'will it rain today', 'latest news', or 'events are on' detected. Using search agent.")
+            if any(keyword in speech_text.lower() for keyword in ["activate search", "weather like today", "will it rain today", "latest news", "events are on"]):
+                print("Phrase 'activate search', 'weather like today', 'will it rain today', 'latest news', or 'events are on' detected. Using search agent.")
                 play(agent_search)
                 agent_response = search_agent(speech_text)
                 print("Agent response:", agent_response)
