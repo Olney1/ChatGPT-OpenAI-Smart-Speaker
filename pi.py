@@ -24,11 +24,10 @@ import pvporcupine
 import struct
 from picamera import PiCamera, PiCameraError
 import base64
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.tools import TavilySearchResults
 from langchain.agents import AgentType, initialize_agent
 from langchain_openai import ChatOpenAI
 from langchain.schema import SystemMessage
-
 # Set the working directory for Pi if you want to run this code via rc.local script so that it is automatically running on Pi startup. Remove this line if you have installed this project in a different directory.
 os.chdir('/home/pi/ChatGPT-OpenAI-Smart-Speaker')
 
@@ -41,26 +40,29 @@ pre_prompt = "You are a helpful smart speaker called Jeffers! Please respond wit
 # Load your keys and tokens here
 load_dotenv()
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+try:
+    TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY")
+    print(f"Tavily search API key found")
+except:
+    print("Tavily search API key not found.")
+    tavily_key_not_found = silence + AudioSegment.from_mp3("sounds/tavily_key_error.mp3")
+    TAVILY_API_KEY = None
 
 # We set the OpenAI model and language settings here for the route that follows general questions and questions with images. This is not for the agent route.
-model_engine = "gpt-4o"
+model_engine = "chatgpt-4o-latest"
 language = 'en'
 
-# Not required but you can set up Langsmith for monitoring and tracing following GitHub documentation: https://docs.smith.langchain.com/ 
-# Just by setting the environment variables, Langsmith will automatically start monitoring and tracing how your agent is performing and log each run.
-# Using Langsmith will help you improve your agent's performance over time by understanding the methods used when processing your questions.
-if all(os.getenv(var) for var in ["LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT", "LANGCHAIN_TRACING_V2"]):
-    LANGCHAIN_API_KEY = os.getenv("LANGCHAIN_API_KEY")
-    LANGCHAIN_PROJECT = os.getenv("LANGCHAIN_PROJECT")
-    LANGCHAIN_TRACING_V2 = os.getenv("LANGCHAIN_TRACING_V2")
-    print("Langsmith monitoring and tracing enabled.")
-else:
-    LANGCHAIN_API_KEY = None
-    LANGCHAIN_PROJECT = None
-    LANGCHAIN_TRACING_V2 = None
-    print("Langsmith monitoring and tracing not enabled.")
+# Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
+tool = TavilySearchResults(
+    max_results=20,
+    include_answer=True,
+    include_raw_content=True,
+    include_images=False,
+    search_depth="advanced",
+    # include_domains = []
+    # exclude_domains = []
+)
 
-# This class controls the LED pixels on the smart speaker to indicate when the speaker is listening, thinking, speaking, or off.
 class Pixels:
     PIXELS_N = 12
 
@@ -167,11 +169,9 @@ def detect_wake_word():
                 return True
     except:
         # Deal with any errors that may occur from using the PicoVoice Service (https://console.picovoice.ai/)
-        print("Error starting the smart speaker speech detection.")
+        print("Error with wake word detection, Porcupine or the PicoVoice Service.")
         error_response = silence + AudioSegment.from_mp3("sounds/picovoice_issue.mp3")
         play(error_response)
-        # Add a delay as we are on a loop and we don't want to keep calling the wake word detection getting the same error message response.
-        time.sleep(25)
 
     finally:
         if audio_stream is not None:
@@ -184,27 +184,32 @@ def detect_wake_word():
 
 # This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent(speech_text):
-    # Set a location for the search agent. Change this to your own location.
-    location = "Colchester, UK"
-    # Get today's date to be able to provide important information to the language model
     today = datetime.today()
-    print(f"Today's date: {today}") # For debugging purposes
-    print(f"User's question understood via the search_agent function: {speech_text}") # For debugging purposes
-    # Load the ChatGPT model for the agent
-    llm = ChatOpenAI(model="gpt-4o", temperature=0.9)
-    # Load the Tavily Search tool which the agent will use to answer questions about weather, news, and recent events.
-    tavily_tool = TavilySearchResults()
-    system_message = SystemMessage(
-        content=f"You are an AI assistant that uses Tavily search to find answers. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric. The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise."
-    )
-    agent = initialize_agent(
-        [tavily_tool],
-        llm,
-        agent_kwargs={"system_message": system_message},
-        agent=AgentType.OPENAI_FUNCTIONS,
-        verbose=True, # This will print the agent's responses to the console for debugging
-    )
-    return agent
+    location = "Colchester, UK"
+    print(f"Today's date: {today}")
+    print(f"User's question understood via the search_agent function: {speech_text}")
+    
+    search_results = tool.invoke({
+        'query': f"The current date is {today}, the user is based in {location} and the user wants to know {speech_text}. Keep responses short and concise. Do not respond with links to websites and do not read out website links, search deeper to find the answer. If the question is about weather, please use Celsius as a metric."
+    })
+    
+    # Process the search results
+    llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
+    
+    # Prepare the content for the LLM
+    content = "\n".join([result['content'] for result in search_results])
+    
+    # Use the LLM to summarise and extract relevant information
+    response = llm.invoke(f"""
+    Based on the following search results, provide a concise and relevant answer to the user's question: "{speech_text}"
+    
+    Search results:
+    {content}
+    
+    Please keep the response short, informative, and directly addressing the user's question. Do not mention sources or include any URLs.
+    """)
+    
+    return response.content
 
 # This function is called after the wake word is detected to listen for the user's question and then proceed to convert the speech to text.
 def recognise_speech():
@@ -215,6 +220,7 @@ def recognise_speech():
         take_photo = silence + AudioSegment.from_mp3("sounds/take_photo.mp3")
         camera_shutter = silence + AudioSegment.from_mp3("sounds/camera_shutter.mp3")
         agent_search = silence + AudioSegment.from_mp3("sounds/agent.mp3")
+        camera_issue = silence + AudioSegment.from_mp3("sounds/camera_issue.mp3")
         print("Listening for your question...")
         audio_stream = r.listen(source, timeout=5, phrase_time_limit=10)
         print("Processing your question...")
@@ -223,14 +229,11 @@ def recognise_speech():
             print("Google Speech Recognition thinks you said: " + speech_text)
 
             # 1. Agent search route
-            # These keywords are open for editing or removal to suit your own use case. Activate search is a good catch-all phrase to trigger the search agent.
-            if any(keyword in speech_text.lower() for keyword in ["activate search", "what's the weather like", "will it rain", "latest news", "events on"]):
-                print("Phrase 'activate search', 'what's the weather like', 'will it rain', 'latest news', or 'events on' detected. Using search agent.")
+            if any(keyword in speech_text.lower() for keyword in ["activate search", "weather like today", "will it rain today", "latest news", "events are on"]):
+                print("Phrase 'activate search', 'weather like today', 'will it rain today', 'latest news', or 'events are on' detected. Using search agent.")
                 play(agent_search)
-                agent = search_agent(speech_text)
-                agent_response = agent.run(speech_text)
+                agent_response = search_agent(speech_text)
                 print("Agent response:", agent_response)
-                # We convert the agent's response to text and save this to speech_text to be sent to OpenAI.
                 return agent_response, None, None
             
             # 2. Image capture route
@@ -254,8 +257,9 @@ def recognise_speech():
                     return None, image_path, speech_text
                 
                 except PiCameraError:
-                    print("Pi camera not detected. Proceeding without capturing an image.")
-                    return None, None, speech_text
+                    print("Pi camera not detected. Please check your camera settings.")
+                    play(camera_issue)
+                    return None, None, None
                 
             # 3. General speech route - no agent or image capture
             return None, None, speech_text
@@ -389,10 +393,10 @@ def main():
             pixels.listen()  # Indicate that the speaker is listening
             agent_response, image_path, speech_text = recognise_speech()
             if agent_response:
-                    #print(f" This is the agent response from TavilySearch: {agent_response}") # For debugging purposes
-                    generate_audio_file(agent_response)
-                    play_response()
-                    pixels.off()
+                print(f"Processed agent response: {agent_response}")  # For debugging
+                generate_audio_file(agent_response)
+                play_response()
+                pixels.off()
             if speech_text:
                 if image_path:
                     response = chatgpt_response_with_image(speech_text, image_path)
