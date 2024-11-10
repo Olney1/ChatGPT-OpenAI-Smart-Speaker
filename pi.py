@@ -237,12 +237,13 @@ def recognise_speech():
                 return agent_response, None, None
             
             # 2. Image capture route
-            if "on the camera" in speech_text.lower() or "turn on camera" in speech_text.lower() or "on camera" in speech_text.lower():
-                print("Phrase 'on the camera' detected.")
+            if "take a look" in speech_text.lower() or "turn on camera" in speech_text.lower() or "on the camera" in speech_text.lower():
+                print("Phrase 'take a look', 'turn on camera', or 'on the camera' detected.")
                 play(start_camera)
                 print("Getting ready to capture an image...")
                 play(take_photo)
                 try:
+                    # Updated to use Picamera2, if you want to revert to PiCamera, please follow a previous version of this code and file on our GitHub repository.
                     camera = Picamera2()
                     # Configure the camera
                     camera_config = camera.create_still_configuration(main={"size": (640, 480)})
@@ -285,7 +286,7 @@ def chatgpt_response(prompt):
             # send the converted audio text to chatgpt
             response = client.chat.completions.create(
                 model=model_engine,
-                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt + "If the user's question involves browsing the web or weather, please respond telling them to use the phrase 'activate search' before asking a question to activate your web search agent."}],
                 max_tokens=400,
                 n=1,
                 temperature=0.7,
