@@ -286,7 +286,7 @@ def chatgpt_response(prompt):
             # send the converted audio text to chatgpt
             response = client.chat.completions.create(
                 model=model_engine,
-                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt + "If the user's question involves browsing the web, local or national current or future events, or event that you are unaware of, news or weather, ALWAYS respond telling them to use the phrase 'activate search' before asking a question."}],
+                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt + "If the user's question involves browsing the web, local or national current or future events, or event that you are unaware of, news or weather, ALWAYS respond telling them to use the phrase 'activate search' before asking a question. If the users question is about taking a photo, ALWAYS respond telling them to use the phrase 'take a look' followed by their question."}],
                 max_tokens=400,
                 n=1,
                 temperature=0.7,
