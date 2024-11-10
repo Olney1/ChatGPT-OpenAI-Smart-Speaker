@@ -22,7 +22,7 @@ from pydub.playback import play as pydub_play
 import time
 import pvporcupine
 import struct
-from picamera import PiCamera, PiCameraError
+from picamera2 import Picamera2
 import base64
 from langchain_community.tools import TavilySearchResults
 from langchain.agents import AgentType, initialize_agent
@@ -238,27 +238,29 @@ def recognise_speech():
                 return agent_response, None, None
             
             # 2. Image capture route
-            if "on the camera" in speech_text.lower() or "turn on the camera" in speech_text.lower() or "on camera" in speech_text.lower():
-                print("Phrase 'on the camera' detected.")
+            if "take a look" in speech_text.lower() or "turn on camera" in speech_text.lower() or "on the camera" in speech_text.lower():
+                print("Phrase 'take a look', 'turn on camera', or 'on the camera' detected.")
                 play(start_camera)
                 print("Getting ready to capture an image...")
                 play(take_photo)
                 try:
-                    camera = PiCamera()
-                    camera.rotation = 180  # Rotate the camera image by 180 degrees - PLEASE REMOVE THIS LINE IF YOUR CAMERA IS ROTATED DIFFERENTLY
-                    camera.resolution = (640, 480)
-                    camera.start_preview()
+                    # Updated to use Picamera2, if you want to revert to PiCamera, please follow a previous version of this code and file on our GitHub repository.
+                    camera = Picamera2()
+                    # Configure the camera
+                    camera_config = camera.create_still_configuration(main={"size": (640, 480)})
+                    camera.configure(camera_config)
+                    camera.start()
                     time.sleep(1)  # Give the camera time to adjust
                     play(camera_shutter)
                     image_path = "captured_image.jpg"
-                    camera.capture(image_path)
-                    camera.stop_preview()
+                    camera.capture_file(image_path)
+                    camera.stop()
                     camera.close()
                     print("Photo captured and saved as captured_image.jpg")
                     return None, image_path, speech_text
                 
-                except PiCameraError:
-                    print("Pi camera not detected. Please check your camera settings.")
+                except Exception as e:
+                    print(f"Pi camera error: {e}")
                     play(camera_issue)
                     return None, None, None
                 
@@ -285,7 +287,7 @@ def chatgpt_response(prompt):
             # send the converted audio text to chatgpt
             response = client.chat.completions.create(
                 model=model_engine,
-                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": pre_prompt}, {"role": "user", "content": prompt + "If the user's question involves browsing the web, local or national current or future events, or event that you are unaware of, news or weather, ALWAYS respond telling them to use the phrase 'activate search' before asking a question. If the users request is to take a photo, ALWAYS respond telling them to use the phrase 'take a look' followed by their request."}],
                 max_tokens=400,
                 n=1,
                 temperature=0.7,
@@ -416,6 +418,5 @@ def main():
                 print("Speech was not recognised or there was an error.")
                 pixels.off()
         # After processing (or failure to process), the loop will continue, returning to wake word detection.
-
 if __name__ == "__main__":
     main()
