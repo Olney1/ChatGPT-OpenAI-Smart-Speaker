@@ -125,6 +125,10 @@ Higher values of `temperature` will result in more diverse and random responses,
 
 ## Important notes for Raspberry Pi Installation
 
+As of May 2024, Seeed Studio has listed the ReSpeaker series among its [retired products](https://wiki.seeedstudio.com/discontinuedproducts/). It may not be compatible with the Raspberry Pi 5 due to hardware changes.
+
+It is highly recommended to install the legacy version of Raspberry Pi on a Rasberry Pi 4b model if you have an ReSPEAKER. You can also simply buy a micro USB microphone and configure the input source for this using alsamixer and currently still use the ReSPEAKER for the lighting pattern.
+
 If you are using the same USB speaker in my video you will need to run `sudo apt-get install pulseaudio` to install support for this. This may also require you to set a command to start pulseaudio on every boot: `pulseaudio --start`.
 
 ### Adding a Start Command on Boot

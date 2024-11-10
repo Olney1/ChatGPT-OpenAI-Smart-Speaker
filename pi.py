@@ -182,9 +182,10 @@ def detect_wake_word():
             porcupine.delete()
     return False
 
-# This function is called to instantiate the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
+# This function is called to use the Langchain search agent using the TavilySearchResults tool to answer questions about weather, news, and recent events.
 def search_agent(speech_text):
     today = datetime.today()
+    #! Update this location to your location
     location = "Colchester, UK"
     print(f"Today's date: {today}")
     print(f"User's question understood via the search_agent function: {speech_text}")
