@@ -5,10 +5,18 @@ name = "pypi"
 
 [packages]
 openai = "*"
-gtts = "*"
-playsound = "*"
-speechrecognition = "*"
 pyaudio = "*"
+speechrecognition = "*"
+gtts = "*"
+python-dotenv = "*"
+apa102-pi = "*"
+gpiozero = "*"
+pydub = "*"
+pvporcupine = "*"
+langchain-community = "*"
+langchain = "*"
+langchain-openai = "*"
+langchainhub = "*"
 
 [dev-packages]
 

@@ -2,6 +2,10 @@ Credit to: https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
 
 .DS_Store
 
+# Ignore Pipfile and Pipfile.lock
+Pipfile
+Pipfile.lock
+
 
 # Django #
 *.log

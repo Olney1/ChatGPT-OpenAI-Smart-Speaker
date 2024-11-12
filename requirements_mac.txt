@@ -1,0 +1,15 @@
+# Requirements for simply testing the chat.py script on a Mac
+openai
+pyaudio
+SpeechRecognition
+gTTS
+python-dotenv
+pydub
+pvporcupine
+langchain-community
+langchain
+langchain-openai
+langchainhub
+PyObjC
+ffmpeg
+pydub
