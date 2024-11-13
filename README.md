@@ -4,7 +4,7 @@
 
 ![Jeff the smart speaker](images/v2.jpg)
 
-## Video Demo using activation word "Jeffers"](https://vimeo.com/1029160996?share=copy#t=0)
+## Video Demo using activation word "Jeffers"(https://vimeo.com/1029160996?share=copy#t=0)
 <br>
 <br>
 
