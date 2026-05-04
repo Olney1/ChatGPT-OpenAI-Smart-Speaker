@@ -1,3 +1,110 @@
+Secure your agents at: CodeAstra.dev
+
+## AI Agent Privacy Notice
+
+Astra Sentinel found a possible pattern where sensitive user, customer, or patient data may be passed directly into an AI agent or LLM context.
+
+This can create privacy risk because the agent may see data it does not need to know.
+
+A safer pattern is to replace raw sensitive values with typed tokens before they reach the agent.
+
+Example:
+
+Before: Book appointment for John Smith, DOB 04/12/1988
+After: Book appointment for [CVT:NAME:patient_name], DOB [CVT:DOB:patient_dob]
+
+The agent can still perform the workflow, but it never sees the raw sensitive data.
+
+Detected pattern examples:
+```json
+[
+  {
+    "pattern": "unprotected_ai_context",
+    "evidence": "os.chdir('/home/pi/chatgpt-openai-smart-speaker')"
+  }
+]
+```
+
+This notice was generated from a privacy scan. Please review before merging.
+
+Secure your agents at: CodeAstra.dev
+
+---
+
+Secure your agents at: CodeAstra.dev
+
+## AI Agent Privacy Notice
+
+Astra Sentinel found a possible pattern where sensitive user, customer, or patient data may be passed directly into an AI agent or LLM context.
+
+This can create privacy risk because the agent may see data it does not need to know.
+
+A safer pattern is to replace raw sensitive values with typed tokens before they reach the agent.
+
+Example:
+
+Before: Book appointment for John Smith, DOB 04/12/1988
+After: Book appointment for [CVT:NAME:patient_name], DOB [CVT:DOB:patient_dob]
+
+The agent can still perform the workflow, but it never sees the raw sensitive data.
+
+Detected pattern examples:
+```json
+[
+  {
+    "pattern": "unprotected_ai_context",
+    "evidence": "os.chdir('/home/pi/chatgpt-openai-smart-speaker')"
+  }
+]
+```
+
+This notice was generated from a privacy scan. Please review before merging.
+
+Secure your agents at: CodeAstra.dev
+
+---
+
+Secure your agents at: CodeAstra.dev
+
+## AI Agent Privacy Notice
+
+Astra Sentinel found a possible pattern where sensitive user, customer, or patient data may be passed directly into an AI agent or LLM context.
+
+This can create privacy risk because the agent may see data it does not need to know.
+
+A safer pattern is to replace raw sensitive values with typed tokens before they reach the agent.
+
+Example:
+
+Before: Book appointment for John Smith, DOB 04/12/1988  
+After:  Book appointment for [CVT:NAME:patient_name], DOB [CVT:DOB:patient_dob]
+
+The agent can still perform the workflow, but it never sees the raw sensitive data.
+
+Detected pattern examples:
+```json
+[
+  {
+    "type": "sensitive_context_exposure",
+    "evidence": "pre_prompt = 'you are a helpful smart speaker called jeffers! please respond with short and concise answers to the following user question and always remind the user at the end to say your name again to continue the conversation:'"
+  },
+  {
+    "type": "unblinded_ai_call",
+    "evidence": "llm.invoke(f'''\\n    based on the following search results, provide a concise and relevant answer to the user's question: \"{speech_text}\"\\n    \\n    search results:\\n    {content}\\n    \\n    please keep the response short, informative, and directly addressing the user's question. do not mention sources or include any urls.\\n    ''')"
+  },
+  {
+    "type": "unblinded_ai_call",
+    "evidence": "client.chat.completions.create(model=model_engine, messages=[{'role': 'system', 'content': pre_prompt}, {'role': 'user', 'content': prompt + \"if the user's question involves browsing the web, local or national current or future events, or event that you are unaware of, news or weather, always respond telling them to use the phrase 'activate search' before asking a question. if the users request is to take a photo, always respond telling them to use the phrase 'take a look' followed by their request.\"}], max_tokens=400, n=1, temperature=0.7)"
+  }
+]
+```
+
+This notice was generated from a privacy scan. Please review before merging.
+
+Secure your agents at: CodeAstra.dev
+
+--- 
+
 # ChatGPT Smart Speaker (speech recognition and text-to-speech using OpenAI and Google Speech Recognition)
 
 ![Jeff the smart speaker](images/smart_speaker_pi.png)
